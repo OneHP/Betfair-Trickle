@@ -1,5 +1,7 @@
 package uk.co.onehp.trickle.routing;
 
+import org.apache.camel.Exchange;
+import org.apache.camel.Expression;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -34,7 +36,12 @@ public class BetfairEngineRouting extends RouteBuilder{
 	
 	@Override
 	public void configure() throws Exception {
-		from("jms:betfair").choice()
+		from("jms:betfair").setHeader("JMSXGroupID", new Expression() {
+			@Override
+			public <T> T evaluate(Exchange arg0, Class<T> arg1) {
+				return null;
+			}
+		}).choice()
 			.when(header("requestType").isEqualTo(LoginReq.class.toString()))
 				.to("jms:login")
 			.when(header("requestType").isEqualTo(ViewProfileReq.class.toString()))

@@ -121,7 +121,7 @@ public class BetfairServiceImpl implements BetfairService {
 		//else
 			//place at SP limit on close
 		Strategy strategy = bet.getStrategy();
-		BigDecimal liability = strategy.getLiability().divide(new BigDecimal(bet.getTimings().size()));
+		BigDecimal liability = strategy.getLiability().divide(new BigDecimal(bet.getNumberOfSplits()), BigDecimal.ROUND_HALF_UP);
 		Pricing bestPricing = BettingUtil.bestPrice(bet.getHorse().getPrices(), strategy.getAspect());
 		if(bestPricing.getPrice().compareTo(strategy.getMaxOdds()) <= 0 && bestPricing.getPrice().compareTo(strategy.getMinOdds()) >= 0){
 			if(strategy.getChasePriceByTick() == 0){

@@ -107,6 +107,16 @@ public class Bet extends BaseDomainObject{
 		return seconds;
 	}
 	
+	public int getNumberOfSplits(){
+		final List<Integer> seconds = Lists.newArrayList();
+		for(BetTiming timing : timings){
+			if(timing != null){
+				seconds.add(timing.getSecondsBeforeOff());
+			}
+		}
+		return seconds.size();
+	}
+	
 	public void markTimingProcessed(int seconds){
 		for(BetTiming timing : timings){
 			if(timing != null && timing.getSecondsBeforeOff() == seconds){

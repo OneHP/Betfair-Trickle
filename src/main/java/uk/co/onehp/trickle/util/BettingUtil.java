@@ -82,12 +82,12 @@ public class BettingUtil {
 
 	public static BigDecimal libilityToStake(BigDecimal liability,
 			BigDecimal price) {
-		return liability.divide(price.subtract(BigDecimal.ONE));
+		return liability.divide(price.subtract(BigDecimal.ONE), BigDecimal.ROUND_HALF_UP);
 	}
 
 	public static BigDecimal findChasePrice(BigDecimal price, int ticks, BettingAspect aspect) {
-		return aspect == BettingAspect.BACK ? PRICE_TICKS.get(PRICE_TICKS.indexOf(price) + ticks) 
-											: PRICE_TICKS.get(PRICE_TICKS.indexOf(price) - ticks);
+		return aspect == BettingAspect.BACK ? PRICE_TICKS.get(PRICE_TICKS.indexOf(price.stripTrailingZeros()) + ticks) 
+											: PRICE_TICKS.get(PRICE_TICKS.indexOf(price.stripTrailingZeros()) - ticks);
 	}
 
 	public static Pricing bestPrice(List<Pricing> pricings,
