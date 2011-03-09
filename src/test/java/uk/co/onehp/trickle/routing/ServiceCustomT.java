@@ -22,6 +22,10 @@ public class ServiceCustomT {
 //		final ScheduledService scheduledService = (ScheduledService) applicationContext
 //		.getBean("scheduledService");
 		
+//		scheduledService.login();
+//		scheduledService.getUkMarket();
+//		scheduledService.getAllMeetings();
+//		scheduledService.getAllRaces();
 //		scheduledService.getAllRacePrices();
 		
 //		final Strategy strategy = new Strategy();

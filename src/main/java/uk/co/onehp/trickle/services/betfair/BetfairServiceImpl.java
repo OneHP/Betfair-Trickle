@@ -144,10 +144,13 @@ public class BetfairServiceImpl implements BetfairService {
 		PlaceBets placeBets = new PlaceBets();
 		placeBets.setBetType(bet.getStrategy().getAspect() == BettingAspect.BACK ? BetTypeEnum.B : BetTypeEnum.L);
 		placeBets.setBetCategoryType(BetCategoryTypeEnum.L);
+		placeBets.setBetPersistenceType(BetPersistenceTypeEnum.NONE);
 		placeBets.setMarketId(bet.getHorse().getRaceId());
 		placeBets.setSelectionId(bet.getHorse().getRunnerId());
 		placeBets.setBspLiability(liability.doubleValue());
-		placeBets.setPrice((bet.getStrategy().getAspect() == BettingAspect.BACK ? bet.getStrategy().getMinOdds() : bet.getStrategy().getMaxOdds()).doubleValue());
+		BigDecimal price = (bet.getStrategy().getAspect() == BettingAspect.BACK ? bet.getStrategy().getMinOdds() : bet.getStrategy().getMaxOdds());
+		placeBets.setSize(bet.getStrategy().getAspect() == BettingAspect.BACK ? liability.doubleValue() : BettingUtil.libilityToStake(liability, price).doubleValue());
+		placeBets.setPrice(price.doubleValue());
 		return placeBets;
 	}
 	

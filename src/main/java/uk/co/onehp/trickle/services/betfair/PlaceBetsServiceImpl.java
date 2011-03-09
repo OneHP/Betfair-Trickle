@@ -11,6 +11,7 @@ import com.betfair.publicapi.types.exchange.v5.APIRequestHeader;
 import com.betfair.publicapi.types.exchange.v5.PlaceBetsErrorEnum;
 import com.betfair.publicapi.types.exchange.v5.PlaceBetsReq;
 import com.betfair.publicapi.types.exchange.v5.PlaceBetsResp;
+import com.betfair.publicapi.types.exchange.v5.PlaceBetsResult;
 import com.betfair.publicapi.v5.bfexchangeservice.BFExchangeService;
 import com.betfair.publicapi.v5.bfexchangeservice.BFExchangeService_Service;
 import com.google.gson.Gson;
@@ -43,6 +44,9 @@ public class PlaceBetsServiceImpl implements PlaceBetsService {
 			
 		}
 		log.debug("PLACE BETS: " + result.getErrorCode().toString());
+		for(PlaceBetsResult pbResult : result.getBetResults().getPlaceBetsResult()){
+			log.debug("PLACE BETS BET: " + pbResult.getResultCode().toString());
+		}
 	}
 
 }
