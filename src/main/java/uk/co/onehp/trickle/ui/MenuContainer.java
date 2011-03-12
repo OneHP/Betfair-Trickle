@@ -1,12 +1,12 @@
 package uk.co.onehp.trickle.ui;
 
 import com.vaadin.ui.Button;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.BaseTheme;
 
 public class MenuContainer extends CustomComponent {
@@ -43,8 +43,13 @@ public class MenuContainer extends CustomComponent {
 
 		@Override
 		public void buttonClick(ClickEvent event) {
-			// TODO Auto-generated method stub
-			
+			Component secondComponent; 
+			try{
+				secondComponent = mainLayout.getComponent(1);
+				mainLayout.replaceComponent(secondComponent, new BetView());
+			}catch(IndexOutOfBoundsException e){
+				mainLayout.addComponent(new BetView(), 1);
+			}
 		}
 	};
 

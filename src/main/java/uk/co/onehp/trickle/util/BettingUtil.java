@@ -93,13 +93,13 @@ public class BettingUtil {
 	public static Pricing bestPrice(List<Pricing> pricings,
 			final BettingAspect aspect) {
 		List<Pricing> filtereredPricings = sortedForAspect(pricings, aspect);
-		return filtereredPricings.get(0);
+		return filtereredPricings.size() > 0 ? filtereredPricings.get(0) : new Pricing(BigDecimal.ZERO, BigDecimal.ZERO, aspect);
 	}
 
 	public static Pricing secondBestPrice(List<Pricing> pricings,
 			final BettingAspect aspect) {
 		List<Pricing> filtereredPricings = sortedForAspect(pricings, aspect);
-		return filtereredPricings.get(1);
+		return filtereredPricings.size() > 1 ? filtereredPricings.get(1) : new Pricing(BigDecimal.ZERO, BigDecimal.ZERO, aspect);
 	}
 
 	private static List<Pricing> sortedForAspect(List<Pricing> pricings,

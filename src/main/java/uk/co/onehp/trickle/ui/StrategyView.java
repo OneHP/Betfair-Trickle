@@ -41,6 +41,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window.Notification;
 import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable(preConstruction=true)
@@ -84,6 +85,7 @@ public class StrategyView extends CustomComponent{
 				strategy.setBetSecondsBeforeStartTime(Lists.newArrayList((Collection<Integer>) splits.getValue()));
 				domainController.saveStrategy(strategy);
 				addStrategyToContainer(strategiesTable.getContainerDataSource(), strategy);
+				getWindow().showNotification("Strategy Saved", Notification.TYPE_HUMANIZED_MESSAGE);
 				resetForm();
 			}
 		}
