@@ -80,9 +80,10 @@ public class EventsServiceImpl implements EventsService {
 					final Market market = new Market(result.getEventParentId(), "");
 					for(BFEvent bfEvent : result.getEventItems().getBFEvent()){
 							if(bfEvent.getEventId()> Integer.parseInt(meetingIdLimit)){
-							final Meeting meeting = new Meeting(bfEvent.getEventId(), bfEvent.getEventName());
-							meeting.setMarket(market);
-						market.addMeeting(meeting);}
+								final Meeting meeting = new Meeting(bfEvent.getEventId(), bfEvent.getEventName());
+								meeting.setMarket(market);
+								market.addMeeting(meeting);
+							}
 					}
 					marketDao.saveOrUpdate(market);
 				}else{

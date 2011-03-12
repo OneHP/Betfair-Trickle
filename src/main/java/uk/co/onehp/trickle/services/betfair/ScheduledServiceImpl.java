@@ -49,16 +49,22 @@ public class ScheduledServiceImpl implements ScheduledService {
 	@Override
 	@Scheduled(cron="0 5 0 * * *")
 	public void getAllRaces() {
+		LocalDateTime now = new LocalDateTime();
 		for(Race race : domainService.getAllRaces()){
-			betfairService.getRace(race.getEventId());
+			if(race.getStartTime().isAfter(now)){
+				betfairService.getRace(race.getEventId());
+			}
 		}
 	}
 
 	@Override
 	@Scheduled(cron="0 45 0 * * *")
 	public void getAllRacePrices() {
+		LocalDateTime now = new LocalDateTime();
 		for(Race race : domainService.getAllRaces()){
-			betfairService.getRacePrices(race.getEventId());
+			if(race.getStartTime().isAfter(now)){
+				betfairService.getRacePrices(race.getEventId());
+			}
 		}
 	}
 
