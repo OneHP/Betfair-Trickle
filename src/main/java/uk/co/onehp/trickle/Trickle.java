@@ -12,21 +12,44 @@
  */
 package uk.co.onehp.trickle;
 
+import uk.co.onehp.trickle.ui.LoginEvent;
+import uk.co.onehp.trickle.ui.LoginView;
+import uk.co.onehp.trickle.ui.MenuContainer;
+
 import com.vaadin.Application;
-import com.vaadin.ui.Label;
+import com.vaadin.ui.Component.Event;
+import com.vaadin.ui.Component.Listener;
 import com.vaadin.ui.Window;
 
-public class Trickle extends Application
+public class Trickle extends Application implements Listener
 {
 	private static final long serialVersionUID = -6377365310082423772L;
 	
 	private Window window;
-	
+	private LoginView loginView;
+
     @Override
     public void init()
     {
     	window = new Window("Betfair Trickle");
         setMainWindow(window);
-        window.addComponent(new Label("App is running"));
+        loginView = new LoginView();
+        loginView.addListener(this);
+		
+        window.addComponent(loginView);
     }
+
+	@Override
+	public void componentEvent(Event event) {
+		if(event instanceof LoginEvent){
+			if(((LoginEvent)event).getType() == LoginEvent.LOGIN_SUCCESS_EVENT){
+				window.removeComponent(loginView);
+				window.addComponent(new MenuContainer());
+			}
+		} else {
+			System.out.println("Unknown event: " +  event.getClass().getSimpleName() + " " + event.toString());
+		}
+		
+		
+	}
 }

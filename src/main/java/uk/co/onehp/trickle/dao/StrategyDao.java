@@ -7,6 +7,5 @@ import uk.co.onehp.trickle.domain.Strategy;
 public interface StrategyDao {
 
 	void saveOrUpdate(Strategy strategy);
-	
 	List<Strategy> findAllStrategies();
 }

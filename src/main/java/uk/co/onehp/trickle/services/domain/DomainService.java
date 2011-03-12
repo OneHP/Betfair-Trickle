@@ -7,6 +7,7 @@ import org.joda.time.LocalDateTime;
 import uk.co.onehp.trickle.domain.Bet;
 import uk.co.onehp.trickle.domain.Meeting;
 import uk.co.onehp.trickle.domain.Race;
+import uk.co.onehp.trickle.domain.Strategy;
 
 public interface DomainService {
 	List<Meeting> getAllMeetings();
@@ -15,4 +16,6 @@ public interface DomainService {
 	List<Bet> getBetsToPlace();
 	List<Bet> getUpcomingBetsToPlace();
 	void updateBet(Bet bet);
+	List<Strategy> getAllStrategies();
+	void saveStrategy(Strategy strategy);
 }

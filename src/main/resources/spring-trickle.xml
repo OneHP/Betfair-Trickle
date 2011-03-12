@@ -28,8 +28,12 @@
 		
 	<context:annotation-config />
 	<context:component-scan base-package="uk.co.onehp.trickle" />
+	<context:spring-configured />
 	<task:annotation-driven/>
 	<import resource="classpath:/spring-hibernate.xml" />
+	
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+	<bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor" />
 	
 	<camel:camelContext id="camelContext">
 		<camel:template id="producerTemplate"/>

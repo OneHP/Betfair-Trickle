@@ -10,22 +10,27 @@ import org.springframework.transaction.annotation.Transactional;
 import uk.co.onehp.trickle.dao.BetDao;
 import uk.co.onehp.trickle.dao.MeetingDao;
 import uk.co.onehp.trickle.dao.RaceDao;
+import uk.co.onehp.trickle.dao.StrategyDao;
 import uk.co.onehp.trickle.domain.Bet;
 import uk.co.onehp.trickle.domain.Meeting;
 import uk.co.onehp.trickle.domain.Race;
+import uk.co.onehp.trickle.domain.Strategy;
 import uk.co.onehp.trickle.util.DateUtil;
 
 @Service("domainService")
 public class DomainServiceImpl implements DomainService {
 
 	@Autowired
-	MeetingDao meetingDao;
+	private MeetingDao meetingDao;
 	
 	@Autowired
-	RaceDao raceDao;
+	private RaceDao raceDao;
 	
 	@Autowired
-	BetDao betDao;
+	private BetDao betDao;
+	
+	@Autowired
+	private StrategyDao strategyDao;
 	
 	@Override
 	@Transactional
@@ -62,6 +67,16 @@ public class DomainServiceImpl implements DomainService {
 	@Transactional
 	public List<Bet> getUpcomingBetsToPlace() {
 		return betDao.getUpcomingBetsToPlace();
+	}
+
+	@Override
+	public List<Strategy> getAllStrategies() {
+		return strategyDao.findAllStrategies();
+	}
+
+	@Override
+	public void saveStrategy(Strategy strategy) {
+		strategyDao.saveOrUpdate(strategy);
 	}
 	
 
