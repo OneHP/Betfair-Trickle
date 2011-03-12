@@ -26,7 +26,7 @@ public class ServiceCustomT {
 		
 //		scheduledService.login();
 //		scheduledService.getUkMarket();
-		scheduledService.getAllMeetings();
+//		scheduledService.getAllMeetings();
 //		scheduledService.getAllRaces();
 //		scheduledService.getAllRacePrices();
 		

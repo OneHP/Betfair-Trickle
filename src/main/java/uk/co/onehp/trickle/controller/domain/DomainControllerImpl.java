@@ -8,7 +8,7 @@ import org.springframework.stereotype.Controller;
 import uk.co.onehp.trickle.domain.Strategy;
 import uk.co.onehp.trickle.services.domain.DomainService;
 
-@Controller("domainController")
+@Controller(value="domainController")
 public class DomainControllerImpl implements DomainController {
 	
 	@Autowired

@@ -23,7 +23,6 @@ import javax.persistence.Id;
 import org.hibernate.annotations.CollectionOfElements;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
-import org.hibernate.annotations.Type;
 
 @Entity
 @NamedQuery(name="ALL_STRATEGIES", query="FROM Strategy")
@@ -38,8 +37,6 @@ public class Strategy extends BaseDomainObject {
 	private BigDecimal minOdds;
 	private BigDecimal maxOdds;
 	private BettingAspect aspect;
-	@Type(type="boolean")
-	private boolean useStartingPrice;
 	private int chasePriceByTick;
 	@CollectionOfElements(fetch=FetchType.EAGER)
 	private List<Integer> betSecondsBeforeStartTime;
@@ -66,14 +63,6 @@ public class Strategy extends BaseDomainObject {
 
 	public void setAspect(BettingAspect aspect) {
 		this.aspect = aspect;
-	}
-
-	public Boolean getUseStartingPrice() {
-		return useStartingPrice;
-	}
-
-	public void setUseStartingPrice(Boolean useStartingPrice) {
-		this.useStartingPrice = useStartingPrice;
 	}
 
 	public void setChasePriceByTick(int chasePriceByTick) {

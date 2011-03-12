@@ -97,7 +97,7 @@ public class EventsServiceImpl implements EventsService {
 					meetingDao.saveOrUpdate(meeting);
 				}
 			}
-			log.debug("GET EVENTS: " + result.getErrorCode().toString());
+			log.debug("GET EVENTS: " + result.getErrorCode().toString() + ": " + result.getHeader().getErrorCode());
 	}
 
 }
