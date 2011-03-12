@@ -42,7 +42,9 @@ public class ScheduledServiceImpl implements ScheduledService {
 	@Scheduled(cron="0 2 0 * * *")
 	public void getAllMeetings() {
 		for(Meeting meeting : domainService.getAllMeetings()){
-			betfairService.getMeeting(meeting.getEventId());
+			if(meeting.getRaces() == null || meeting.getRaces().size() == 0){
+				betfairService.getMeeting(meeting.getEventId());
+			}
 		}
 	}
 
