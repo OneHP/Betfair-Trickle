@@ -37,7 +37,7 @@ public class LoginServiceImpl implements LoginService {
 	@Override
 	@Transactional
 	public void login(String req) {
-		
+			log.debug("LOGIN: " + req);
 			final BFGlobalService_Service service = new BFGlobalService_Service();
 			final BFGlobalService port = service
 					.getBFGlobalService();

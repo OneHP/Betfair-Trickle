@@ -27,6 +27,7 @@ public class PlaceBetsServiceImpl implements PlaceBetsService {
 	@Override
 	@Transactional
 	public void placeBets(String req) {
+		log.debug("PLACE BETS: " + req);
 		final BFExchangeService_Service service = new BFExchangeService_Service();
 		final BFExchangeService port = service
 				.getBFExchangeService();

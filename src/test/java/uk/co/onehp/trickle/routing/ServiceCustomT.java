@@ -25,8 +25,8 @@ public class ServiceCustomT {
 		.getBean("scheduledService");
 		
 //		scheduledService.login();
-		scheduledService.getUkMarket();
-//		scheduledService.getAllMeetings();
+//		scheduledService.getUkMarket();
+		scheduledService.getAllMeetings();
 //		scheduledService.getAllRaces();
 //		scheduledService.getAllRacePrices();
 		

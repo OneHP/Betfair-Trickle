@@ -59,6 +59,7 @@ public class EventsServiceImpl implements EventsService {
 	@Override
 	@Transactional
 	public void getEvents(String req) {
+			log.debug("GET EVENTS: " + req);
 			final BFGlobalService_Service service = new BFGlobalService_Service();
 			final BFGlobalService port = service
 					.getBFGlobalService();

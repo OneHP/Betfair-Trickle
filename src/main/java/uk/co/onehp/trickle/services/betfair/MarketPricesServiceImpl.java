@@ -42,6 +42,7 @@ public class MarketPricesServiceImpl implements MarketPricesService {
 	
 	@Override
 	public void getMarketPrices(String req) {
+		log.debug("GET MARKET PRICES: " + req);
 		final BFExchangeService_Service service = new BFExchangeService_Service();
 		final BFExchangeService port = service
 				.getBFExchangeService();

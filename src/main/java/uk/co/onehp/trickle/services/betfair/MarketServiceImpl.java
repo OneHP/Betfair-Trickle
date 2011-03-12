@@ -33,6 +33,7 @@ public class MarketServiceImpl implements MarketService {
 	@Override
 	@Transactional
 	public void getMarket(String req) {
+		log.debug("GET MARKET: " + req);
 		final BFExchangeService_Service service = new BFExchangeService_Service();
 		final BFExchangeService port = service
 				.getBFExchangeService();
