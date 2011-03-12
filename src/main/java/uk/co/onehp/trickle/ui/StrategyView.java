@@ -37,49 +37,37 @@ import com.vaadin.ui.themes.BaseTheme;
 
 @Configurable(preConstruction=true)
 public class StrategyView extends CustomComponent{
-	
 	private static final long serialVersionUID = -5241205137895068157L;
-	
-	private HorizontalLayout mainLayout;
 	
 	@Autowired
 	private DomainController domainController;
 	
+	private HorizontalLayout mainLayout;
 	private final List<Strategy> strategies;
-
 	private Table strategiesTable;
-	
 	private VerticalLayout formSection;
-	
 	private Form strategyForm;
-	
 	private Button saveStrategyButton; 
-	
 	private Strategy addition;
 
 	private final ClickListener saveStrategyListener = new ClickListener() {
-		
 		private static final long serialVersionUID = 3652412596841159881L;
-
 		@SuppressWarnings("unchecked")
 		@Override
 		public void buttonClick(ClickEvent event) {
 			if(strategyForm.isValid()){
-				System.out.println(strategyForm.getField("betSecondsBeforeStartTime"));
 				addition.setBetSecondsBeforeStartTime(Lists.newArrayList((Collection<Integer>) strategyForm.getField("betSecondsBeforeStartTime").getValue()));
 				domainController.saveStrategy(addition);
 				addition = new Strategy();
+				strategyForm.discard();
 			}
 		}
 	};
 	
 	public StrategyView(){
-    	
     	strategies = domainController.getAllStrategies();
-    	
 		buildView();
     	setCompositionRoot(mainLayout);
-        
 	}
 	
 	private void buildView(){

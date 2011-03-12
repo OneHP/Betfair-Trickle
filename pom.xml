@@ -139,7 +139,7 @@
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin</artifactId>
-			<version>6.4.3</version>
+			<version>6.5.2</version>
 		</dependency>
 		<!--
 			This is also used by gwt-maven-plugin to deduce GWT version number.

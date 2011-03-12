@@ -18,6 +18,8 @@ import com.google.common.collect.Lists;
 import com.vaadin.data.Item;
 import com.vaadin.data.validator.RegexpValidator;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.ui.AbstractComponent.ComponentErrorEvent;
+import com.vaadin.ui.AbstractComponent.ComponentErrorHandler;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.DefaultFieldFactory;
 import com.vaadin.ui.Field;
@@ -47,6 +49,13 @@ class StrategyFieldFactory extends DefaultFieldFactory {
         secondsBeforeStart.setWidth(COMMON_FIELD_WIDTH);
         secondsBeforeStart.setMultiSelect(true);
         secondsBeforeStart.setRequired(true);
+        secondsBeforeStart.setErrorHandler(new ComponentErrorHandler() {
+			private static final long serialVersionUID = -5252184191956773593L;
+			@Override
+			public boolean handleComponentError(ComponentErrorEvent event) {
+				return true;
+			}
+		});
     }
 
     @Override
