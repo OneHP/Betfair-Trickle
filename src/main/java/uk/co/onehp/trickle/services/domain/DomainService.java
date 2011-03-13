@@ -12,10 +12,13 @@ import uk.co.onehp.trickle.domain.Strategy;
 public interface DomainService {
 	List<Meeting> getAllMeetings();
 	List<Race> getAllRaces();
+	List<Bet> getIncompleteBets();
 	LocalDateTime getNextBetTime();
 	List<Bet> getBetsToPlace();
 	List<Bet> getUpcomingBetsToPlace();
 	void updateBet(Bet bet);
 	List<Strategy> getAllStrategies();
 	void saveStrategy(Strategy strategy);
+	void deleteStrategy(Strategy strategy);
+	void deleteBet(Bet bet);
 }

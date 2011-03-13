@@ -19,5 +19,10 @@ public class HibernateStrategyDao extends HibernateBaseDao implements StrategyDa
 	public List<Strategy> findAllStrategies() {
 		return hibernateTemplate.findByNamedQuery("ALL_STRATEGIES");
 	}
+
+	@Override
+	public void deleteStrategy(Strategy strategy) {
+		super.delete(strategy);
+	}
 	
 }

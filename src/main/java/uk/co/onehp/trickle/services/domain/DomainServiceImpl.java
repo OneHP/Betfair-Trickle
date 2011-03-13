@@ -78,6 +78,21 @@ public class DomainServiceImpl implements DomainService {
 	public void saveStrategy(Strategy strategy) {
 		strategyDao.saveOrUpdate(strategy);
 	}
+
+	@Override
+	public List<Bet> getIncompleteBets() {
+		return betDao.getIncompleteBets();
+	}
+
+	@Override
+	public void deleteStrategy(Strategy strategy) {
+		strategyDao.deleteStrategy(strategy);
+	}
+
+	@Override
+	public void deleteBet(Bet bet) {
+		betDao.deleteBet(bet);
+	}
 	
 
 }

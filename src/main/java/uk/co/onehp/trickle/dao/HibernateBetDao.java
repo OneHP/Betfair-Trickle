@@ -4,13 +4,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.log4j.Logger;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import uk.co.onehp.trickle.domain.Bet;
-import uk.co.onehp.trickle.services.betfair.EventsServiceImpl;
 import uk.co.onehp.trickle.util.DateUtil;
 
 import com.google.common.base.Predicate;
@@ -22,8 +20,6 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 	
 	@Value("${upcomingBetsSeconds}")
 	private int upcomingBetsSeconds;
-
-	private final Logger log = Logger.getLogger(EventsServiceImpl.class);
 	
 	@Override
 	public void saveOrUpdate(Bet bet) {
@@ -54,7 +50,6 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 		filteredBets = Lists.newArrayList(Iterables.filter(bets, new Predicate<Bet>() {
 			@Override
 			public boolean apply(Bet bet) {
-				log.debug(bet);
 				return new LocalDateTime().isAfter(bet.getHorse().getRace().getStartTime().minusSeconds(DateUtil.getMostSeconds(bet.getUnprocessedTimings())));
 			}
 		}));
@@ -73,5 +68,16 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 			}
 		}));
 		return filteredBets;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Bet> getIncompleteBets() {
+		return hibernateTemplate.findByNamedQuery("ALL_BETS");
+	}
+
+	@Override
+	public void deleteBet(Bet bet) {
+		super.delete(bet);
 	}
 }

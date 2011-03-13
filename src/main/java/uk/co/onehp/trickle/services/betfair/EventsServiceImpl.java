@@ -82,7 +82,6 @@ public class EventsServiceImpl implements EventsService {
 					for(BFEvent bfEvent : result.getEventItems().getBFEvent()){
 							if(bfEvent.getEventId()> Integer.parseInt(meetingIdLimit)){
 								final Meeting meeting = new Meeting(bfEvent.getEventId(), bfEvent.getEventName());
-								meeting.setMarket(market);
 								market.addMeeting(meeting);
 							}
 					}
@@ -91,7 +90,6 @@ public class EventsServiceImpl implements EventsService {
 					final Meeting meeting = meetingDao.getMeeting(result.getEventParentId());
 					for(MarketSummary marketSummary : result.getMarketItems().getMarketSummary()){
 						final Race race = new Race(marketSummary.getMarketId(),marketSummary.getMarketName(),DateUtil.gregorianCalendarToLocalDateTime(marketSummary.getStartTime()));
-						race.setMeeting(meeting);
 						meeting.addRace(race);
 					}
 					meetingDao.saveOrUpdate(meeting);

@@ -49,13 +49,16 @@ public class StrategyView extends CustomComponent{
 	private static final long serialVersionUID = -5241205137895068157L;
 	private static final String COMMON_FIELD_WIDTH = "12em";
 	private static final String DOUBLE_FIELD_WIDTH = "24em";
+	private static final String [] COLUMNS = {"Description", "Aspect", "Liability", "Chase by Tick", "Min Odds", "Max Odds", "Splits"};
 	
 	@Autowired
 	private DomainController domainController;
 	
 	private HorizontalLayout mainLayout;
-	private final List<Strategy> strategies;
+	private List<Strategy> strategies;
 	private Table strategiesTable;
+	private Button deleteStrategyButton;
+	private VerticalLayout tableSection;
 	private VerticalLayout formSection;
 	private Button saveStrategyButton; 
 	
@@ -68,7 +71,7 @@ public class StrategyView extends CustomComponent{
 	private final OptionGroup aspect = new OptionGroup("Aspect", Lists.newArrayList(BettingAspect.BACK, BettingAspect.LAY));
 	private final TwinColSelect splits =  new TwinColSelect("Place bet __ seconds before start", 
 			Lists.newArrayList(30,60,90,120,150,180,210,240,270,300,360,420,480,540,600));
-
+	
 	private final ClickListener saveStrategyListener = new ClickListener() {
 		private static final long serialVersionUID = 3652412596841159881L;
 		@SuppressWarnings("unchecked")
@@ -84,9 +87,23 @@ public class StrategyView extends CustomComponent{
 				strategy.setMaxOdds(new BigDecimal((String)maxOdds.getValue()));
 				strategy.setBetSecondsBeforeStartTime(Lists.newArrayList((Collection<Integer>) splits.getValue()));
 				domainController.saveStrategy(strategy);
-				addStrategyToContainer(strategiesTable.getContainerDataSource(), strategy);
+				populateStrategiesTable();
 				getWindow().showNotification("Strategy Saved", Notification.TYPE_HUMANIZED_MESSAGE);
 				resetForm();
+			}
+		}
+	};
+	
+	private final ClickListener deleteStrategyListener = new ClickListener() {
+		private static final long serialVersionUID = 3652412596841159881L;
+		@Override
+		public void buttonClick(ClickEvent event) {
+			if(null!= strategiesTable.getValue()){
+				Strategy strategy = (Strategy)strategiesTable.getContainerProperty(strategiesTable.getValue(), "Strategy").getValue();
+				domainController.deleteStrategy(strategy);
+				strategiesTable.setValue(null);
+				populateStrategiesTable();
+				getWindow().showNotification("Strategy Deleted", Notification.TYPE_HUMANIZED_MESSAGE);
 			}
 		}
 	};
@@ -106,12 +123,20 @@ public class StrategyView extends CustomComponent{
 		formSection = new VerticalLayout();
 		formSection.setSpacing(true);
 		
+		tableSection = new VerticalLayout();
+		tableSection.setSpacing(true);
+		
 		strategiesTable = new Table("Strategies", createContainerFromStrategies());
+		strategiesTable.setSelectable(true);
+		strategiesTable.setVisibleColumns(COLUMNS);
 		strategiesTable.setWidth("100%");
 		strategiesTable.setHeight("250px");
 		
 		saveStrategyButton = new Button("Save Strategy", saveStrategyListener);
 		saveStrategyButton.setStyleName(BaseTheme.BUTTON_LINK);
+		
+		deleteStrategyButton = new Button("Delete Strategy", deleteStrategyListener);
+		deleteStrategyButton.setStyleName(BaseTheme.BUTTON_LINK);
 		
 		setupFormFields();
 		
@@ -124,9 +149,18 @@ public class StrategyView extends CustomComponent{
 		formSection.addComponent(maxOdds);
 		formSection.addComponent(splits);
 		formSection.addComponent(saveStrategyButton);
+		
+		tableSection.addComponent(strategiesTable);
+		tableSection.addComponent(deleteStrategyButton);
 
-		mainLayout.addComponent(strategiesTable);
+		mainLayout.addComponent(tableSection);
 		mainLayout.addComponent(formSection);
+	}
+	
+	public void populateStrategiesTable(){
+		strategies = domainController.getAllStrategies();
+		strategiesTable.setContainerDataSource(createContainerFromStrategies());
+		strategiesTable.setVisibleColumns(COLUMNS);
 	}
 	
 	private void resetForm(){
@@ -187,10 +221,11 @@ public class StrategyView extends CustomComponent{
 	private Container createContainerFromStrategies(){
 		Container container = new IndexedContainer();
 		
-		List<String> headers = Lists.newArrayList("Description", "Aspect", "Liability", "Chase by Tick", "Min Odds", "Max Odds", "Splits");
+		List<String> headers = Lists.newArrayList(COLUMNS);
 		for(String header : headers){
 			container.addContainerProperty(header, String.class, "");
 		}
+		container.addContainerProperty("Strategy", Strategy.class, null);
 		
 		for(Strategy strategy : strategies){
 			addStrategyToContainer(container, strategy);
@@ -208,5 +243,6 @@ public class StrategyView extends CustomComponent{
 		container.getContainerProperty(id, "Min Odds").setValue(addition.getMinOdds().toString());
 		container.getContainerProperty(id, "Max Odds").setValue(addition.getMaxOdds().toString());
 		container.getContainerProperty(id, "Splits").setValue(addition.getBetSecondsBeforeStartTime().toString());
+		container.getContainerProperty(id, "Strategy").setValue(addition);
 	}
 }

@@ -13,4 +13,8 @@ public abstract class HibernateBaseDao {
 	public void saveOrUpdate(final BaseDomainObject object) {
 		hibernateTemplate.saveOrUpdate(object);
 	}
+	
+	public void delete(final BaseDomainObject object){
+		hibernateTemplate.delete(object);
+	}
 }

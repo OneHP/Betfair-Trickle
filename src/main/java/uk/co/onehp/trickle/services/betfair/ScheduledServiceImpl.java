@@ -79,7 +79,7 @@ public class ScheduledServiceImpl implements ScheduledService {
 	}
 
 	@Override
-	@Scheduled(cron="* * 7-23 * * * ")
+	@Scheduled(cron="* * 7-21 * * * ")
 	public void placeBets() {
 		List<Bet> bets = domainService.getBetsToPlace();
 		final LocalDateTime now = new LocalDateTime();
@@ -95,7 +95,7 @@ public class ScheduledServiceImpl implements ScheduledService {
 	}
 
 	@Override
-	@Scheduled(cron="*/5 * 7-23 * * * ")
+	@Scheduled(cron="*/5 * 7-21 * * * ")
 	public void getPricesForUpcomingBets() {
 		List<Bet> bets = domainService.getUpcomingBetsToPlace();
 		for(Bet bet : bets){

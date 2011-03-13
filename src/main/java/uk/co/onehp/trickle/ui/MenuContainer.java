@@ -20,6 +20,8 @@ public class MenuContainer extends CustomComponent {
 	private Button status;
 	private Button reports;
 	private Button accountDetails;
+	private final StrategyView strategyView = new StrategyView();
+	private final BetView betView = new BetView();
 	
 	private final ClickListener strategiesListener = new ClickListener() {
 		
@@ -30,7 +32,8 @@ public class MenuContainer extends CustomComponent {
 			Component secondComponent; 
 			try{
 				secondComponent = mainLayout.getComponent(1);
-				mainLayout.replaceComponent(secondComponent, new StrategyView());
+				mainLayout.replaceComponent(secondComponent, strategyView);
+				strategyView.populateStrategiesTable();
 			}catch(IndexOutOfBoundsException e){
 				mainLayout.addComponent(new StrategyView(), 1);
 			}
@@ -46,7 +49,8 @@ public class MenuContainer extends CustomComponent {
 			Component secondComponent; 
 			try{
 				secondComponent = mainLayout.getComponent(1);
-				mainLayout.replaceComponent(secondComponent, new BetView());
+				mainLayout.replaceComponent(secondComponent, betView);
+				betView.populateBetsTable();
 			}catch(IndexOutOfBoundsException e){
 				mainLayout.addComponent(new BetView(), 1);
 			}

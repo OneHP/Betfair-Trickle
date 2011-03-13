@@ -10,4 +10,6 @@ public interface BetDao {
 	Bet getNextBet();
 	List<Bet> getBetsToPlace();
 	List<Bet> getUpcomingBetsToPlace();
+	List<Bet> getIncompleteBets();
+	void deleteBet(Bet bet);
 }

@@ -29,7 +29,7 @@
 	</logger>
 	
 	<logger name="uk.co.onehp">
-		<level value="warn" />
+		<level value="debug" />
 	</logger>
 	
 	<logger name="org.apache.camel">

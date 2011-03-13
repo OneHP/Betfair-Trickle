@@ -11,4 +11,7 @@ public interface DomainController {
 	void saveBet(Bet bet);
 	List<Strategy> getAllStrategies();
 	List<Meeting> getAllMeetings();
+	List<Bet> getIncompleteBets();
+	void deleteStrategy(Strategy strategy);
+	void deleteBet(Bet bet);
 }

@@ -14,6 +14,7 @@ import uk.co.onehp.trickle.domain.Race;
 import uk.co.onehp.trickle.domain.Strategy;
 import uk.co.onehp.trickle.util.BettingUtil;
 
+import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
@@ -25,6 +26,7 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.Table;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window.Notification;
@@ -33,14 +35,19 @@ import com.vaadin.ui.themes.BaseTheme;
 @Configurable(preConstruction=true)
 public class BetView extends CustomComponent {
 	private static final long serialVersionUID = 37912938374833758L;
+	private static final String [] COLUMNS = {"Race", "Horse", "Strategy"};
 
 	@Autowired
 	private DomainController domainController;
 	
 	private HorizontalLayout mainLayout;
 	private final List<Meeting> meetings;
-	private final List<Strategy> strategies;
+	private List<Strategy> strategies;
+	private List<Bet> bets;
+	private Table betsTable;
+	private Button deleteBetButton;
 	private Tree meetingsTree;
+	private VerticalLayout tableSection;
 	private VerticalLayout formSection;
 	private Panel meetingsTreePanel;
 	private ComboBox strategy;
@@ -52,9 +59,25 @@ public class BetView extends CustomComponent {
 		@Override
 		public void buttonClick(ClickEvent event) {
 			if(validateForm()){
-				domainController.saveBet(new Bet((Horse)meetingsTree.getContainerProperty(meetingsTree.getValue(), "Horse").getValue()
-						, (Strategy)strategy.getContainerProperty(strategy.getValue(), "Strategy").getValue()));
+				final Bet bet = new Bet((Horse)meetingsTree.getContainerProperty(meetingsTree.getValue(), "Horse").getValue()
+						, (Strategy)strategy.getContainerProperty(strategy.getValue(), "Strategy").getValue());
+				domainController.saveBet(bet);
+				addBetToContainer(betsTable.getContainerDataSource(), bet);
 				getWindow().showNotification("Bet Saved", Notification.TYPE_HUMANIZED_MESSAGE);
+			}
+		}
+	};
+	
+	private final ClickListener deleteBetListener = new ClickListener() {
+		private static final long serialVersionUID = 3652412596841159881L;
+		@Override
+		public void buttonClick(ClickEvent event) {
+			if(null!= betsTable.getValue()){
+				Bet bet = (Bet)betsTable.getContainerProperty(betsTable.getValue(), "Bet").getValue();
+				domainController.deleteBet(bet);
+				betsTable.setValue(null);
+				populateBetsTable();
+				getWindow().showNotification("Bet Deleted", Notification.TYPE_HUMANIZED_MESSAGE);
 			}
 		}
 	};
@@ -62,6 +85,7 @@ public class BetView extends CustomComponent {
 	public BetView(){
 		meetings = domainController.getAllMeetings();
 		strategies = domainController.getAllStrategies();
+		bets = domainController.getIncompleteBets();
 		buildView();
     	setCompositionRoot(mainLayout);
 	}
@@ -74,6 +98,9 @@ public class BetView extends CustomComponent {
 		formSection = new VerticalLayout();
 		formSection.setSpacing(true);
 		
+		tableSection = new VerticalLayout();
+		tableSection.setSpacing(true);
+		
 		meetingsTreePanel = new Panel();
 		meetingsTreePanel.setHeight("500px");
 		
@@ -81,8 +108,17 @@ public class BetView extends CustomComponent {
 		
 		strategy = new ComboBox("Strategy", createContainerFromStrategies());
 		
+		betsTable = new Table("Bets", createContainerFromBets());
+		betsTable.setSelectable(true);
+		betsTable.setVisibleColumns(COLUMNS);
+		betsTable.setWidth("100%");
+		betsTable.setHeight("250px");
+		
 		saveBetButton = new Button("Save Bet", saveBetListener);
 		saveBetButton.setStyleName(BaseTheme.BUTTON_LINK);
+		
+		deleteBetButton = new Button("Delete Bet", deleteBetListener);
+		deleteBetButton.setStyleName(BaseTheme.BUTTON_LINK);
 		
 		meetingsTreePanel.addComponent(meetingsTree);
 		
@@ -93,8 +129,23 @@ public class BetView extends CustomComponent {
 		formSection.addComponent(strategy);
 		formSection.addComponent(saveBetButton);
 		
+		tableSection.addComponent(betsTable);
+		tableSection.addComponent(deleteBetButton);
+		
+		mainLayout.addComponent(tableSection);
 		mainLayout.addComponent(formSection);
 		
+	}
+	
+	public void populateBetsTable(){
+		bets = domainController.getIncompleteBets();
+		betsTable.setContainerDataSource(createContainerFromBets());
+		betsTable.setVisibleColumns(COLUMNS);
+	}
+	
+	public void populateStrategyDropDown(){
+		strategies = domainController.getAllStrategies();
+		strategy.setContainerDataSource(createContainerFromStrategies());
 	}
 	
 	private void setupFormFields() {
@@ -111,7 +162,7 @@ public class BetView extends CustomComponent {
 	}
 	
 	private boolean validateForm(){
-		return strategy.isValid() && meetingsTree.isValid() && null != meetingsTree.getContainerProperty(meetingsTree.getValue(), "Horse");
+		return strategy.isValid() && meetingsTree.isValid() && null != meetingsTree.getContainerProperty(meetingsTree.getValue(), "Horse").getValue();
 	}
 	
 	private Container createContainerFromMeetings(){
@@ -170,5 +221,29 @@ public class BetView extends CustomComponent {
 		Object id = container.addItem();
 		container.getContainerProperty(id, "Description").setValue(addition.getDescription());
 		container.getContainerProperty(id, "Strategy").setValue(addition);
+	}
+	
+	private Container createContainerFromBets(){
+		Container container = new IndexedContainer();
+		List<String> headers = Lists.newArrayList(COLUMNS);
+		for(String header : headers){
+			container.addContainerProperty(header, String.class, "");
+		}
+		container.addContainerProperty("Bet", Bet.class, null);
+		
+		for(Bet bet : bets){
+			addBetToContainer(container, bet);
+		}
+		
+		return container;
+	}
+
+	private void addBetToContainer(Container container, Bet addition) {
+		Object id = container.addItem();
+		
+		container.getContainerProperty(id, "Race").setValue(addition.getHorse().getRace().getName());
+		container.getContainerProperty(id, "Horse").setValue(addition.getHorse().getName());
+		container.getContainerProperty(id, "Strategy").setValue(addition.getStrategy().getDescription());
+		container.getContainerProperty(id, "Bet").setValue(addition);
 	}
 }

@@ -17,7 +17,6 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Cascade;
@@ -38,8 +37,6 @@ public class Meeting extends BaseDomainObject {
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexColumn(name="RACES")
 	private List<Race> races;
-	@ManyToOne
-	private Market market;
 
 	public Meeting(){
 		eventId = 0;
@@ -69,13 +66,5 @@ public class Meeting extends BaseDomainObject {
 			races = Lists.newArrayList();
 		}
 		races.add(race);
-	}
-
-	public void setMarket(Market market) {
-		this.market = market;
-	}
-
-	public Market getMarket() {
-		return market;
 	}
 }

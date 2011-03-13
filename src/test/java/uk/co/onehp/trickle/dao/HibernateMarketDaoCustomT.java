@@ -21,7 +21,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import uk.co.onehp.trickle.domain.BettingAspect;
 import uk.co.onehp.trickle.domain.Horse;
-import uk.co.onehp.trickle.domain.HorsePk;
 import uk.co.onehp.trickle.domain.Market;
 import uk.co.onehp.trickle.domain.Meeting;
 import uk.co.onehp.trickle.domain.Pricing;
@@ -53,16 +52,13 @@ public class HibernateMarketDaoCustomT {
 		horse.setPrices(Lists.newArrayList(pricing));
 
 		race.addHorse(horse);
-		race.setMeeting(meeting);
 
 		meeting.addRace(race);
-		meeting.setMarket(market);
 
 		market.addMeeting(meeting);
 
 		marketDao.saveOrUpdate(market);
 		System.out.println(marketDao.getMarket(7483));
-		System.out.println(horseDao.getHorse(new HorsePk(441, 867)).getRace().getMeeting().getMarket().getId());
 	}
 
 }
