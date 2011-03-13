@@ -16,6 +16,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 @Repository("betDao")
+@SuppressWarnings("unchecked")
 public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 	
 	@Value("${upcomingBetsSeconds}")
@@ -28,7 +29,6 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 
 	@Override
 	public Bet getNextBet() {
-		@SuppressWarnings("unchecked")
 		List<Bet> bets = hibernateTemplate.findByNamedQuery("ALL_BETS");
 		Collections.sort(bets, new Comparator<Bet>() {
 
@@ -44,7 +44,6 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 
 	@Override
 	public List<Bet> getBetsToPlace() {
-		@SuppressWarnings("unchecked")
 		List<Bet> bets = hibernateTemplate.findByNamedQuery("ALL_BETS");
 		List<Bet> filteredBets;
 		filteredBets = Lists.newArrayList(Iterables.filter(bets, new Predicate<Bet>() {
@@ -58,7 +57,6 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 
 	@Override
 	public List<Bet> getUpcomingBetsToPlace() {
-		@SuppressWarnings("unchecked")
 		List<Bet> bets = hibernateTemplate.findByNamedQuery("ALL_BETS");
 		List<Bet> filteredBets;
 		filteredBets = Lists.newArrayList(Iterables.filter(bets, new Predicate<Bet>() {
@@ -70,7 +68,6 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 		return filteredBets;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Bet> getIncompleteBets() {
 		return hibernateTemplate.findByNamedQuery("ALL_BETS");
