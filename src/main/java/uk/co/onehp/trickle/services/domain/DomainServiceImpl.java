@@ -70,28 +70,39 @@ public class DomainServiceImpl implements DomainService {
 	}
 
 	@Override
+	@Transactional
 	public List<Strategy> getAllStrategies() {
 		return strategyDao.findAllStrategies();
 	}
 
 	@Override
+	@Transactional
 	public void saveStrategy(Strategy strategy) {
 		strategyDao.saveOrUpdate(strategy);
 	}
 
 	@Override
+	@Transactional
 	public List<Bet> getIncompleteBets() {
 		return betDao.getIncompleteBets();
 	}
 
 	@Override
+	@Transactional
 	public void deleteStrategy(Strategy strategy) {
 		strategyDao.deleteStrategy(strategy);
 	}
 
 	@Override
+	@Transactional
 	public void deleteBet(Bet bet) {
 		betDao.deleteBet(bet);
+	}
+
+	@Override
+	@Transactional
+	public void deleteIncompleteBets() {
+		betDao.deleteIncompleteBets();
 	}
 	
 

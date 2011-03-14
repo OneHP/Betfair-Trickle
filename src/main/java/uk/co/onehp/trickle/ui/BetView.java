@@ -46,6 +46,7 @@ public class BetView extends CustomComponent {
 	private List<Bet> bets;
 	private Table betsTable;
 	private Button deleteBetButton;
+	private Button clearAllBetsButton;
 	private Tree meetingsTree;
 	private VerticalLayout tableSection;
 	private VerticalLayout formSection;
@@ -79,6 +80,17 @@ public class BetView extends CustomComponent {
 				populateBetsTable();
 				getWindow().showNotification("Bet Deleted", Notification.TYPE_HUMANIZED_MESSAGE);
 			}
+		}
+	};
+	
+	private final ClickListener clearAllBetsListener = new ClickListener() {
+		private static final long serialVersionUID = 3652412596841159881L;
+		@Override
+		public void buttonClick(ClickEvent event) {
+			domainController.deleteIncompleteBets();
+			betsTable.setValue(null);
+			populateBetsTable();
+			getWindow().showNotification("All Bets Cleared", Notification.TYPE_HUMANIZED_MESSAGE);
 		}
 	};
 	
@@ -120,6 +132,9 @@ public class BetView extends CustomComponent {
 		deleteBetButton = new Button("Delete Bet", deleteBetListener);
 		deleteBetButton.setStyleName(BaseTheme.BUTTON_LINK);
 		
+		clearAllBetsButton = new Button("Clear All Bets", clearAllBetsListener);
+		clearAllBetsButton.setStyleName(BaseTheme.BUTTON_LINK);
+		
 		meetingsTreePanel.addComponent(meetingsTree);
 		
 		setupFormFields();
@@ -131,6 +146,7 @@ public class BetView extends CustomComponent {
 		
 		tableSection.addComponent(betsTable);
 		tableSection.addComponent(deleteBetButton);
+		tableSection.addComponent(clearAllBetsButton);
 		
 		mainLayout.addComponent(tableSection);
 		mainLayout.addComponent(formSection);

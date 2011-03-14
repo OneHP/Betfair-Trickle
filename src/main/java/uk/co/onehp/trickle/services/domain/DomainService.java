@@ -21,4 +21,5 @@ public interface DomainService {
 	void saveStrategy(Strategy strategy);
 	void deleteStrategy(Strategy strategy);
 	void deleteBet(Bet bet);
+	void deleteIncompleteBets();
 }

@@ -14,4 +14,5 @@ public interface DomainController {
 	List<Bet> getIncompleteBets();
 	void deleteStrategy(Strategy strategy);
 	void deleteBet(Bet bet);
+	void deleteIncompleteBets();
 }

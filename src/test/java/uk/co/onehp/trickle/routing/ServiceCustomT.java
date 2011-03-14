@@ -5,6 +5,8 @@ import org.junit.Ignore;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import uk.co.onehp.trickle.services.betfair.ScheduledService;
+
 @Ignore
 public class ServiceCustomT {
 
@@ -19,14 +21,14 @@ public class ServiceCustomT {
 //		final BetfairService betfairService = (BetfairService) applicationContext
 //		.getBean("betfairService");
 		
-//		final ScheduledService scheduledService = (ScheduledService) applicationContext
-//		.getBean("scheduledService");
+		final ScheduledService scheduledService = (ScheduledService) applicationContext
+		.getBean("scheduledService");
 		
 //		scheduledService.login();
 //		scheduledService.getUkMarket();
 //		scheduledService.getAllMeetings();
 //		scheduledService.getAllRaces();
-//		scheduledService.getAllRacePrices();
+		scheduledService.getAllRacePrices();
 		
 //		final Strategy strategy = new Strategy();
 //		strategy.setAspect(BettingAspect.BACK);

@@ -12,4 +12,5 @@ public interface BetDao {
 	List<Bet> getUpcomingBetsToPlace();
 	List<Bet> getIncompleteBets();
 	void deleteBet(Bet bet);
+	void deleteIncompleteBets();
 }

@@ -77,4 +77,9 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 	public void deleteBet(Bet bet) {
 		super.delete(bet);
 	}
+
+	@Override
+	public void deleteIncompleteBets() {
+		hibernateTemplate.deleteAll(hibernateTemplate.findByNamedQuery("ALL_BETS"));
+	}
 }
