@@ -7,6 +7,7 @@ import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.onehp.trickle.domain.Bet;
 import uk.co.onehp.trickle.domain.Meeting;
@@ -80,6 +81,7 @@ public class ScheduledServiceImpl implements ScheduledService {
 
 	@Override
 	@Scheduled(cron="* * 7-21 * * * ")
+	@Transactional
 	public void placeBets() {
 		List<Bet> bets = domainService.getBetsToPlace();
 		final LocalDateTime now = new LocalDateTime();

@@ -36,4 +36,10 @@ public class DateUtil {
 		return seconds.get(0);
 	}
 	
+	public static String toShortString(LocalDateTime localDateTime){
+		return String.format("%s %s %s:%s", localDateTime.toDateTime().monthOfYear().getAsShortText()
+				, localDateTime.toDateTime().dayOfMonth().getAsText(), localDateTime.getHourOfDay()
+				, localDateTime.getMinuteOfHour());
+	}
+	
 }

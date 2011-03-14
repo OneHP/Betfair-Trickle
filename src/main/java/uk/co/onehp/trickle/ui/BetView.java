@@ -7,12 +7,15 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import uk.co.onehp.trickle.controller.domain.DomainController;
 import uk.co.onehp.trickle.domain.Bet;
+import uk.co.onehp.trickle.domain.BetLog;
+import uk.co.onehp.trickle.domain.BetType;
 import uk.co.onehp.trickle.domain.BettingAspect;
 import uk.co.onehp.trickle.domain.Horse;
 import uk.co.onehp.trickle.domain.Meeting;
 import uk.co.onehp.trickle.domain.Race;
 import uk.co.onehp.trickle.domain.Strategy;
 import uk.co.onehp.trickle.util.BettingUtil;
+import uk.co.onehp.trickle.util.DateUtil;
 
 import com.google.common.collect.Lists;
 import com.vaadin.data.Container;
@@ -35,7 +38,7 @@ import com.vaadin.ui.themes.BaseTheme;
 @Configurable(preConstruction=true)
 public class BetView extends CustomComponent {
 	private static final long serialVersionUID = 37912938374833758L;
-	private static final String [] COLUMNS = {"Race", "Horse", "Strategy"};
+	private static final String [] INCOMPLETE_BETS_COLUMNS = {"Race", "Horse", "Strategy"};
 
 	@Autowired
 	private DomainController domainController;
@@ -43,14 +46,18 @@ public class BetView extends CustomComponent {
 	private HorizontalLayout mainLayout;
 	private final List<Meeting> meetings;
 	private List<Strategy> strategies;
-	private List<Bet> bets;
-	private Table betsTable;
+	private List<Bet> incompleteBets;
+	private List<Bet> completeBets;
+	private Table incompleteBetsTable;
 	private Button deleteBetButton;
 	private Button clearAllBetsButton;
 	private Tree meetingsTree;
-	private VerticalLayout tableSection;
+	private Tree completeBetsTree;
+	private VerticalLayout incompleteBetsSection;
 	private VerticalLayout formSection;
+	private VerticalLayout completeBetsSection;
 	private Panel meetingsTreePanel;
+	private Panel completeBetsTreePanel;
 	private ComboBox strategy;
 	private final Label formTitle = new Label("New Bet");
 	private Button saveBetButton;
@@ -63,7 +70,7 @@ public class BetView extends CustomComponent {
 				final Bet bet = new Bet((Horse)meetingsTree.getContainerProperty(meetingsTree.getValue(), "Horse").getValue()
 						, (Strategy)strategy.getContainerProperty(strategy.getValue(), "Strategy").getValue());
 				domainController.saveBet(bet);
-				addBetToContainer(betsTable.getContainerDataSource(), bet);
+				addBetToTableContainer(incompleteBetsTable.getContainerDataSource(), bet);
 				getWindow().showNotification("Bet Saved", Notification.TYPE_HUMANIZED_MESSAGE);
 			}
 		}
@@ -73,11 +80,11 @@ public class BetView extends CustomComponent {
 		private static final long serialVersionUID = 3652412596841159881L;
 		@Override
 		public void buttonClick(ClickEvent event) {
-			if(null!= betsTable.getValue()){
-				Bet bet = (Bet)betsTable.getContainerProperty(betsTable.getValue(), "Bet").getValue();
+			if(null!= incompleteBetsTable.getValue()){
+				Bet bet = (Bet)incompleteBetsTable.getContainerProperty(incompleteBetsTable.getValue(), "Bet").getValue();
 				domainController.deleteBet(bet);
-				betsTable.setValue(null);
-				populateBetsTable();
+				incompleteBetsTable.setValue(null);
+				populateIncompleteBetsTable();
 				getWindow().showNotification("Bet Deleted", Notification.TYPE_HUMANIZED_MESSAGE);
 			}
 		}
@@ -88,8 +95,8 @@ public class BetView extends CustomComponent {
 		@Override
 		public void buttonClick(ClickEvent event) {
 			domainController.deleteIncompleteBets();
-			betsTable.setValue(null);
-			populateBetsTable();
+			incompleteBetsTable.setValue(null);
+			populateIncompleteBetsTable();
 			getWindow().showNotification("All Bets Cleared", Notification.TYPE_HUMANIZED_MESSAGE);
 		}
 	};
@@ -97,7 +104,8 @@ public class BetView extends CustomComponent {
 	public BetView(){
 		meetings = domainController.getAllMeetings();
 		strategies = domainController.getAllStrategies();
-		bets = domainController.getIncompleteBets();
+		incompleteBets = domainController.getIncompleteBets();
+		completeBets = domainController.getCompleteBets();
 		buildView();
     	setCompositionRoot(mainLayout);
 	}
@@ -110,21 +118,29 @@ public class BetView extends CustomComponent {
 		formSection = new VerticalLayout();
 		formSection.setSpacing(true);
 		
-		tableSection = new VerticalLayout();
-		tableSection.setSpacing(true);
+		incompleteBetsSection = new VerticalLayout();
+		incompleteBetsSection.setSpacing(true);
+		
+		completeBetsSection = new VerticalLayout();
+		completeBetsSection.setSpacing(true);
 		
 		meetingsTreePanel = new Panel();
 		meetingsTreePanel.setHeight("500px");
 		
-		meetingsTree = new Tree("Races", createContainerFromMeetings());
+		completeBetsTreePanel = new Panel();
+		completeBetsTreePanel.setHeight("500px");
 		
-		strategy = new ComboBox("Strategy", createContainerFromStrategies());
+		meetingsTree = new Tree("Races", createTreeContainerFromMeetings());
 		
-		betsTable = new Table("Bets", createContainerFromBets());
-		betsTable.setSelectable(true);
-		betsTable.setVisibleColumns(COLUMNS);
-		betsTable.setWidth("100%");
-		betsTable.setHeight("250px");
+		completeBetsTree = new Tree("Complete Bets", createTreeContainerFromCompleteBets());
+		
+		strategy = new ComboBox("Strategy", createDropdownContainerFromStrategies());
+		
+		incompleteBetsTable = new Table("Bets", createTableContainerFromIncompleteBets());
+		incompleteBetsTable.setSelectable(true);
+		incompleteBetsTable.setVisibleColumns(INCOMPLETE_BETS_COLUMNS);
+		incompleteBetsTable.setWidth("100%");
+		incompleteBetsTable.setHeight("250px");
 		
 		saveBetButton = new Button("Save Bet", saveBetListener);
 		saveBetButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -137,6 +153,8 @@ public class BetView extends CustomComponent {
 		
 		meetingsTreePanel.addComponent(meetingsTree);
 		
+		completeBetsTreePanel.addComponent(completeBetsTree);
+		
 		setupFormFields();
 		
 		formSection.addComponent(formTitle);
@@ -144,24 +162,32 @@ public class BetView extends CustomComponent {
 		formSection.addComponent(strategy);
 		formSection.addComponent(saveBetButton);
 		
-		tableSection.addComponent(betsTable);
-		tableSection.addComponent(deleteBetButton);
-		tableSection.addComponent(clearAllBetsButton);
+		incompleteBetsSection.addComponent(incompleteBetsTable);
+		incompleteBetsSection.addComponent(deleteBetButton);
+		incompleteBetsSection.addComponent(clearAllBetsButton);
 		
-		mainLayout.addComponent(tableSection);
+		completeBetsSection.addComponent(completeBetsTreePanel);
+		
+		mainLayout.addComponent(incompleteBetsSection);
 		mainLayout.addComponent(formSection);
+		mainLayout.addComponent(completeBetsSection);
 		
 	}
 	
-	public void populateBetsTable(){
-		bets = domainController.getIncompleteBets();
-		betsTable.setContainerDataSource(createContainerFromBets());
-		betsTable.setVisibleColumns(COLUMNS);
+	public void populateIncompleteBetsTable(){
+		incompleteBets = domainController.getIncompleteBets();
+		incompleteBetsTable.setContainerDataSource(createTableContainerFromIncompleteBets());
+		incompleteBetsTable.setVisibleColumns(INCOMPLETE_BETS_COLUMNS);
+	}
+	
+	public void populateCompleteBetsTree(){
+		completeBets = domainController.getCompleteBets();
+		completeBetsTree.setContainerDataSource(createTreeContainerFromCompleteBets());
 	}
 	
 	public void populateStrategyDropDown(){
 		strategies = domainController.getAllStrategies();
-		strategy.setContainerDataSource(createContainerFromStrategies());
+		strategy.setContainerDataSource(createDropdownContainerFromStrategies());
 	}
 	
 	private void setupFormFields() {
@@ -172,6 +198,11 @@ public class BetView extends CustomComponent {
 		meetingsTree.setRequired(true);
 		meetingsTree.setMultiSelect(false);
 		
+		completeBetsTree.setItemCaptionPropertyId("Detail");
+		completeBetsTree.setWidth("100%");
+		completeBetsTree.setHeight("100%");
+		completeBetsTree.setSelectable(false);
+		
 		strategy.setItemCaptionPropertyId("Description");
 		strategy.setNullSelectionAllowed(false);
 		strategy.setRequired(true);
@@ -181,37 +212,66 @@ public class BetView extends CustomComponent {
 		return strategy.isValid() && meetingsTree.isValid() && null != meetingsTree.getContainerProperty(meetingsTree.getValue(), "Horse").getValue();
 	}
 	
-	private Container createContainerFromMeetings(){
+	private Container createTreeContainerFromCompleteBets(){
+		HierarchicalContainer container = new HierarchicalContainer();
+		container.addContainerProperty("Detail", String.class, "");
+		for(Bet bet : completeBets){
+			Object betId = addBetToTreeContainer(container, bet);
+			for(BetLog betLog : bet.getBetLogs())
+			addBetLogToTreeContainer(container, betLog, betId);
+		}
+		return container;
+	}
+	
+	private Object addBetToTreeContainer(HierarchicalContainer container, Bet addition) {
+		Object id = container.addItem();
+		container.getContainerProperty(id, "Detail").setValue(addition.getHorse().getRace().getName() 
+				+ " - " + addition.getHorse().getName() + " - " + addition.getStrategy().getDescription());
+		return id;
+	}
+	
+	private Object addBetLogToTreeContainer(HierarchicalContainer container, BetLog addition, Object parent) {
+		Object id = container.addItem();
+		container.getContainerProperty(id, "Detail").setValue(DateUtil.toShortString(addition.getPlacedDateTime()) 
+				+ " - £" + addition.getLiability() + " - " + addition.getPrice() + " - " 
+				+ (addition.getBetType() == BetType.MOC_EXCHANGE ? "Exchange" : "SP"));
+		container.setParent(id, parent);
+		container.setChildrenAllowed(parent, true);
+		container.setChildrenAllowed(id, false);
+		return id;
+	}
+	
+	private Container createTreeContainerFromMeetings(){
 		HierarchicalContainer container = new HierarchicalContainer();
 		container.addContainerProperty("Name", String.class, "");
 		container.addContainerProperty("Horse", Horse.class, null);
 		for(Meeting meeting : meetings){
-			Object meetingId = addMeetingToContainer(container, meeting);
+			Object meetingId = addMeetingToTreeContainer(container, meeting);
 			for(Race race : meeting.getRaces()){
-				Object raceId = addRaceToContainer(container, race, meetingId);
+				Object raceId = addRaceToTreeContainer(container, race, meetingId);
 				for(Horse horse : race.getRunners()){
-					addHorseToContainer(container, horse, raceId);
+					addHorseToTreeContainer(container, horse, raceId);
 				}
 			}
 		}
 		return container;
 	}
 
-	private Object addMeetingToContainer(HierarchicalContainer container, Meeting addition) {
+	private Object addMeetingToTreeContainer(HierarchicalContainer container, Meeting addition) {
 		Object id = container.addItem();
 		container.getContainerProperty(id, "Name").setValue(addition.getName());
 		return id;
 	}
 	
-	private Object addRaceToContainer(HierarchicalContainer container, Race addition, Object parent) {
+	private Object addRaceToTreeContainer(HierarchicalContainer container, Race addition, Object parent) {
 		Object id = container.addItem();
-		container.getContainerProperty(id, "Name").setValue(addition.getName() + " - " + addition.getStartTime());
+		container.getContainerProperty(id, "Name").setValue(addition.getName() + " - " + DateUtil.toShortString(addition.getStartTime()));
 		container.setParent(id, parent);
 		container.setChildrenAllowed(parent, true);
 		return id;
 	}
 	
-	private Object addHorseToContainer(HierarchicalContainer container, Horse addition, Object parent) {
+	private Object addHorseToTreeContainer(HierarchicalContainer container, Horse addition, Object parent) {
 		Object id = container.addItem();
 		container.getContainerProperty(id, "Name").setValue(addition.getName() 
 				+ " - B" + BettingUtil.bestPrice(addition.getPrices(), BettingAspect.BACK).getPrice() 
@@ -223,38 +283,38 @@ public class BetView extends CustomComponent {
 		return id;
 	}
 	
-	private Container createContainerFromStrategies(){
+	private Container createDropdownContainerFromStrategies(){
 		Container container = new IndexedContainer();
 		container.addContainerProperty("Description", String.class, "");
 		container.addContainerProperty("Strategy", Strategy.class, null);
 		for(Strategy strategy : strategies){
-			addStrategyToContainer(container, strategy);
+			addStrategyToDropdownContainer(container, strategy);
 		}
 		return container;
 	}
 
-	private void addStrategyToContainer(Container container, Strategy addition) {
+	private void addStrategyToDropdownContainer(Container container, Strategy addition) {
 		Object id = container.addItem();
 		container.getContainerProperty(id, "Description").setValue(addition.getDescription());
 		container.getContainerProperty(id, "Strategy").setValue(addition);
 	}
 	
-	private Container createContainerFromBets(){
+	private Container createTableContainerFromIncompleteBets(){
 		Container container = new IndexedContainer();
-		List<String> headers = Lists.newArrayList(COLUMNS);
+		List<String> headers = Lists.newArrayList(INCOMPLETE_BETS_COLUMNS);
 		for(String header : headers){
 			container.addContainerProperty(header, String.class, "");
 		}
 		container.addContainerProperty("Bet", Bet.class, null);
 		
-		for(Bet bet : bets){
-			addBetToContainer(container, bet);
+		for(Bet bet : incompleteBets){
+			addBetToTableContainer(container, bet);
 		}
 		
 		return container;
 	}
 
-	private void addBetToContainer(Container container, Bet addition) {
+	private void addBetToTableContainer(Container container, Bet addition) {
 		Object id = container.addItem();
 		
 		container.getContainerProperty(id, "Race").setValue(addition.getHorse().getRace().getName());

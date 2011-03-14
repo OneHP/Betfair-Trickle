@@ -56,4 +56,9 @@ public class DomainControllerImpl implements DomainController {
 		domainService.deleteIncompleteBets();
 	}
 
+	@Override
+	public List<Bet> getCompleteBets() {
+		return domainService.getCompleteBets();
+	}
+
 }

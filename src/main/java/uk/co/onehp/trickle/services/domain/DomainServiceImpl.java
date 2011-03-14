@@ -104,6 +104,11 @@ public class DomainServiceImpl implements DomainService {
 	public void deleteIncompleteBets() {
 		betDao.deleteIncompleteBets();
 	}
+
+	@Override
+	public List<Bet> getCompleteBets() {
+		return betDao.getCompleteBets();
+	}
 	
 
 }

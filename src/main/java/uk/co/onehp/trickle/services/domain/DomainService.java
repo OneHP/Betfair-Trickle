@@ -13,6 +13,7 @@ public interface DomainService {
 	List<Meeting> getAllMeetings();
 	List<Race> getAllRaces();
 	List<Bet> getIncompleteBets();
+	List<Bet> getCompleteBets();
 	LocalDateTime getNextBetTime();
 	List<Bet> getBetsToPlace();
 	List<Bet> getUpcomingBetsToPlace();

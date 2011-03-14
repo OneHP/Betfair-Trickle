@@ -25,13 +25,17 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.NamedQueries;
 import org.hibernate.annotations.NamedQuery;
 import org.hibernate.annotations.Type;
 
 import com.google.common.collect.Lists;
 
 @Entity
-@NamedQuery(name="ALL_BETS", query="FROM Bet WHERE complete = 'false'")
+@NamedQueries({
+	@NamedQuery(name="INCOMPLETE_BETS", query="FROM Bet WHERE complete = 'false'"),
+	@NamedQuery(name="COMPLETE_BETS", query="FROM Bet WHERE complete = 1")
+})
 public class Bet extends BaseDomainObject{
 
 	@Id
@@ -50,6 +54,10 @@ public class Bet extends BaseDomainObject{
 	private List<BetTiming> timings;
 	@Type(type="boolean")
 	private boolean complete;
+	@OneToMany(fetch=FetchType.EAGER)
+	@Cascade(CascadeType.SAVE_UPDATE)
+	@IndexColumn(name="LOGS")
+	private List<BetLog> betLogs;
 	
 	public Bet(){
 		
@@ -127,5 +135,17 @@ public class Bet extends BaseDomainObject{
 				return;
 			}
 		}
+	}
+	
+	public void addLog(BetLog betLog){
+		if(null == betLogs){
+			betLogs = Lists.newArrayList(betLog);
+		}else{
+			betLogs.add(betLog);
+		}
+	}
+	
+	public List<BetLog> getBetLogs(){
+		return betLogs;
 	}
 }

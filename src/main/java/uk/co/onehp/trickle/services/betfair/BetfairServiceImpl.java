@@ -13,9 +13,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.onehp.trickle.domain.Bet;
+import uk.co.onehp.trickle.domain.BetLog;
+import uk.co.onehp.trickle.domain.BetType;
 import uk.co.onehp.trickle.domain.BettingAspect;
 import uk.co.onehp.trickle.domain.Pricing;
 import uk.co.onehp.trickle.domain.Strategy;
+import uk.co.onehp.trickle.services.domain.DomainService;
 import uk.co.onehp.trickle.services.session.SessionService;
 import uk.co.onehp.trickle.util.BettingUtil;
 
@@ -56,6 +59,9 @@ public class BetfairServiceImpl implements BetfairService {
 	
 	@Autowired
 	private SessionService sessionService;
+	
+	@Autowired
+	private DomainService domainService;
 
 	@Override
 	@Transactional
@@ -141,6 +147,9 @@ public class BetfairServiceImpl implements BetfairService {
 	}
 	
 	private PlaceBets createLimitedSPBet(Bet bet, BigDecimal liability){
+		BigDecimal price = (bet.getStrategy().getAspect() == BettingAspect.BACK ? bet.getStrategy().getMinOdds() : bet.getStrategy().getMaxOdds());
+		bet.addLog(new BetLog(new LocalDateTime(), liability, price, BetType.LIMITED_SP));
+		domainService.updateBet(bet);
 		PlaceBets placeBets = new PlaceBets();
 		placeBets.setBetType(bet.getStrategy().getAspect() == BettingAspect.BACK ? BetTypeEnum.B : BetTypeEnum.L);
 		placeBets.setBetCategoryType(BetCategoryTypeEnum.L);
@@ -148,13 +157,14 @@ public class BetfairServiceImpl implements BetfairService {
 		placeBets.setMarketId(bet.getHorse().getRaceId());
 		placeBets.setSelectionId(bet.getHorse().getRunnerId());
 		placeBets.setBspLiability(liability.doubleValue());
-		BigDecimal price = (bet.getStrategy().getAspect() == BettingAspect.BACK ? bet.getStrategy().getMinOdds() : bet.getStrategy().getMaxOdds());
 		placeBets.setSize(bet.getStrategy().getAspect() == BettingAspect.BACK ? liability.doubleValue() : BettingUtil.libilityToStake(liability, price).doubleValue());
 		placeBets.setPrice(price.doubleValue());
 		return placeBets;
 	}
 	
 	private PlaceBets createMOCExchangeBet(Bet bet, BigDecimal liability, BigDecimal price){
+		bet.addLog(new BetLog(new LocalDateTime(), liability, price, BetType.MOC_EXCHANGE));
+		domainService.updateBet(bet);
 		PlaceBets placeBets = new PlaceBets();
 		placeBets.setBetType(bet.getStrategy().getAspect() == BettingAspect.BACK ? BetTypeEnum.B : BetTypeEnum.L);
 		placeBets.setBetCategoryType(BetCategoryTypeEnum.E);

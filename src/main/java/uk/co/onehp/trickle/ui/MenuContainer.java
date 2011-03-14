@@ -50,8 +50,9 @@ public class MenuContainer extends CustomComponent {
 			try{
 				secondComponent = mainLayout.getComponent(1);
 				mainLayout.replaceComponent(secondComponent, betView);
-				betView.populateBetsTable();
+				betView.populateIncompleteBetsTable();
 				betView.populateStrategyDropDown();
+				betView.populateCompleteBetsTree();
 			}catch(IndexOutOfBoundsException e){
 				mainLayout.addComponent(new BetView(), 1);
 			}

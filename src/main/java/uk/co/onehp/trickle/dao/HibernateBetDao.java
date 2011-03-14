@@ -29,7 +29,7 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 
 	@Override
 	public Bet getNextBet() {
-		List<Bet> bets = hibernateTemplate.findByNamedQuery("ALL_BETS");
+		List<Bet> bets = hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS");
 		Collections.sort(bets, new Comparator<Bet>() {
 
 			@Override
@@ -44,7 +44,7 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 
 	@Override
 	public List<Bet> getBetsToPlace() {
-		List<Bet> bets = hibernateTemplate.findByNamedQuery("ALL_BETS");
+		List<Bet> bets = hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS");
 		List<Bet> filteredBets;
 		filteredBets = Lists.newArrayList(Iterables.filter(bets, new Predicate<Bet>() {
 			@Override
@@ -57,7 +57,7 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 
 	@Override
 	public List<Bet> getUpcomingBetsToPlace() {
-		List<Bet> bets = hibernateTemplate.findByNamedQuery("ALL_BETS");
+		List<Bet> bets = hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS");
 		List<Bet> filteredBets;
 		filteredBets = Lists.newArrayList(Iterables.filter(bets, new Predicate<Bet>() {
 			@Override
@@ -70,7 +70,7 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 
 	@Override
 	public List<Bet> getIncompleteBets() {
-		return hibernateTemplate.findByNamedQuery("ALL_BETS");
+		return hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS");
 	}
 
 	@Override
@@ -80,6 +80,11 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 
 	@Override
 	public void deleteIncompleteBets() {
-		hibernateTemplate.deleteAll(hibernateTemplate.findByNamedQuery("ALL_BETS"));
+		hibernateTemplate.deleteAll(hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS"));
+	}
+
+	@Override
+	public List<Bet> getCompleteBets() {
+		return hibernateTemplate.findByNamedQuery("COMPLETE_BETS");
 	}
 }
