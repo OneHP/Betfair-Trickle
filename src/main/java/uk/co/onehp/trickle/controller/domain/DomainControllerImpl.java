@@ -14,6 +14,7 @@ package uk.co.onehp.trickle.controller.domain;
 
 import java.util.List;
 
+import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
@@ -22,55 +23,78 @@ import uk.co.onehp.trickle.domain.Meeting;
 import uk.co.onehp.trickle.domain.Strategy;
 import uk.co.onehp.trickle.services.domain.DomainService;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+
 @Controller(value="domainController")
 public class DomainControllerImpl implements DomainController {
-	
+
 	@Autowired
 	private DomainService domainService;
-	
+
 	@Override
 	public void saveStrategy(Strategy strategy) {
-		domainService.saveStrategy(strategy);
+		this.domainService.saveStrategy(strategy);
 	}
 
 	@Override
 	public List<Strategy> getAllStrategies() {
-		return domainService.getAllStrategies();
+		return this.domainService.getAllStrategies();
 	}
 
 	@Override
 	public List<Meeting> getAllMeetings() {
-		return domainService.getAllMeetings();
+		return Lists.newArrayList(Iterables.filter(this.domainService.getAllMeetings(), new Predicate<Meeting>() {
+			@Override
+			public boolean apply(Meeting meeting) {
+				if(meeting.getRaces().size() < 1){
+					return false;
+				}
+				return meeting.getRaces().get(0).getStartTime().isAfter(new LocalDateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0));
+			}
+		}));
 	}
 
 	@Override
 	public void saveBet(Bet bet) {
-		domainService.updateBet(bet);
+		this.domainService.updateBet(bet);
 	}
 
 	@Override
 	public List<Bet> getIncompleteBets() {
-		return domainService.getIncompleteBets();
+		return betsFromTodayOrLater(this.domainService.getIncompleteBets());
 	}
 
 	@Override
 	public void deleteStrategy(Strategy strategy) {
-		domainService.deleteStrategy(strategy);
+		this.domainService.deleteStrategy(strategy);
 	}
 
 	@Override
 	public void deleteBet(Bet bet) {
-		domainService.deleteBet(bet);
+		this.domainService.deleteBet(bet);
 	}
 
 	@Override
 	public void deleteIncompleteBets() {
-		domainService.deleteIncompleteBets();
+		this.domainService.deleteIncompleteBets();
 	}
 
 	@Override
 	public List<Bet> getCompleteBets() {
-		return domainService.getCompleteBets();
+		return betsFromTodayOrLater(this.domainService.getCompleteBets());
+	}
+
+	private List<Bet> betsFromTodayOrLater(List<Bet> bets) {
+		List<Bet> filteredBets;
+		filteredBets = Lists.newArrayList(Iterables.filter(bets, new Predicate<Bet>() {
+			@Override
+			public boolean apply(Bet bet) {
+				return bet.getHorse().getRace().getStartTime().isAfter(new LocalDateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0));
+			}
+		}));
+		return filteredBets;
 	}
 
 }

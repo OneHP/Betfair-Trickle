@@ -30,18 +30,19 @@ import com.google.common.collect.Lists;
 @Repository("betDao")
 @SuppressWarnings("unchecked")
 public class HibernateBetDao extends HibernateBaseDao implements BetDao {
-	
+
 	@Value("${upcomingBetsSeconds}")
 	private int upcomingBetsSeconds;
-	
+
 	@Override
+	//	@CacheEvict(value = {"completeBets","incompleteBets"}, allEntries = true)
 	public void saveOrUpdate(Bet bet) {
 		super.saveOrUpdate(bet);
 	}
 
 	@Override
 	public Bet getNextBet() {
-		List<Bet> bets = hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS");
+		List<Bet> bets = incompleteBets();
 		Collections.sort(bets, new Comparator<Bet>() {
 
 			@Override
@@ -56,7 +57,7 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 
 	@Override
 	public List<Bet> getBetsToPlace() {
-		List<Bet> bets = hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS");
+		List<Bet> bets = incompleteBets();
 		List<Bet> filteredBets;
 		filteredBets = Lists.newArrayList(Iterables.filter(bets, new Predicate<Bet>() {
 			@Override
@@ -69,12 +70,12 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 
 	@Override
 	public List<Bet> getUpcomingBetsToPlace() {
-		List<Bet> bets = hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS");
+		List<Bet> bets = incompleteBets();
 		List<Bet> filteredBets;
 		filteredBets = Lists.newArrayList(Iterables.filter(bets, new Predicate<Bet>() {
 			@Override
 			public boolean apply(Bet bet) {
-				return new LocalDateTime().isAfter(bet.getHorse().getRace().getStartTime().minusSeconds(DateUtil.getMostSeconds(bet.getUnprocessedTimings()) + upcomingBetsSeconds));
+				return new LocalDateTime().isAfter(bet.getHorse().getRace().getStartTime().minusSeconds(DateUtil.getMostSeconds(bet.getUnprocessedTimings()) + HibernateBetDao.this.upcomingBetsSeconds));
 			}
 		}));
 		return filteredBets;
@@ -82,21 +83,33 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 
 	@Override
 	public List<Bet> getIncompleteBets() {
-		return hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS");
+		return incompleteBets();
 	}
 
 	@Override
+	//	@CacheEvict(value = {"completeBets","incompleteBets"}, allEntries = true)
 	public void deleteBet(Bet bet) {
 		super.delete(bet);
 	}
 
 	@Override
+	//	@CacheEvict(value = {"completeBets","incompleteBets"}, allEntries = true)
 	public void deleteIncompleteBets() {
-		hibernateTemplate.deleteAll(hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS"));
+		this.hibernateTemplate.deleteAll(this.hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS"));
 	}
 
 	@Override
 	public List<Bet> getCompleteBets() {
-		return hibernateTemplate.findByNamedQuery("COMPLETE_BETS");
+		return completeBets();
+	}
+
+	//	@Cacheable("completeBets")
+	private List<Bet> completeBets(){
+		return this.hibernateTemplate.findByNamedQuery("COMPLETE_BETS");
+	}
+
+	//	@Cacheable(value = "incompleteBets")
+	private List<Bet> incompleteBets(){
+		return this.hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS");
 	}
 }

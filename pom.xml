@@ -13,6 +13,7 @@
  */ -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>uk.co.onehp</groupId>
 	<artifactId>WEB-Trickle</artifactId>
@@ -23,7 +24,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.slf4j.version>1.5.10</org.slf4j.version>
-		<spring.version>3.0.1.RELEASE</spring.version>
+		<spring.version>3.1.0.M1</spring.version>
 	</properties>
 
 	<build>
@@ -132,6 +133,13 @@
 
 	<repositories>
 		<repository>
+     	 	<id>spring</id>
+      		<url>http://s3.amazonaws.com/maven.springframework.org/milestone</url>
+      		<releases>
+      			<enabled>false</enabled>
+      		</releases>
+    	</repository>
+		<repository>
 			<id>vaadin-snapshots</id>
 			<url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
 			<releases>
@@ -212,14 +220,9 @@
 			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.5.2</version>
-		</dependency>
-		<dependency>
 		    <groupId>org.aspectj</groupId>
 		    <artifactId>aspectjrt</artifactId>
-		    <version>1.6.10</version>
+		    <version>1.6.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.nakedobjects.core</groupId>
@@ -255,6 +258,12 @@
 			<groupId>hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<version>1.8.0.7</version>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.ehcache</groupId>
+		    <artifactId>ehcache</artifactId>
+		    <version>2.3.2</version>
+		    <type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>com.google.collections</groupId>

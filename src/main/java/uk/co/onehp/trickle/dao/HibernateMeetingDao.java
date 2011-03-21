@@ -23,18 +23,22 @@ public class HibernateMeetingDao extends HibernateBaseDao implements MeetingDao 
 
 	@Override
 	public Meeting getMeeting(int id) {
-		return hibernateTemplate.get(Meeting.class, id);
+		return this.hibernateTemplate.get(Meeting.class, id);
 	}
-	
+
 	@Override
 	public void saveOrUpdate(Meeting meeting) {
 		super.saveOrUpdate(meeting);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<Meeting> getAllMeetings() {
-		return hibernateTemplate.findByNamedQuery("ALL_MEETINGS");
+		return allMeetings();
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<Meeting> allMeetings(){
+		return this.hibernateTemplate.findByNamedQuery("ALL_MEETINGS");
 	}
 
 }

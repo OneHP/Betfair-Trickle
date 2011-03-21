@@ -21,7 +21,7 @@ public class HibernateMarketDao extends HibernateBaseDao implements MarketDao{
 
 	@Override
 	public Market getMarket(final int id) {
-		return hibernateTemplate.get(Market.class, id);
+		return this.hibernateTemplate.get(Market.class, id);
 	}
 
 	@Override

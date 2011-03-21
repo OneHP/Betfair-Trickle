@@ -54,7 +54,7 @@ public class BetView extends CustomComponent {
 
 	@Autowired
 	private DomainController domainController;
-	
+
 	private HorizontalLayout mainLayout;
 	private final List<Meeting> meetings;
 	private List<Strategy> strategies;
@@ -73,191 +73,192 @@ public class BetView extends CustomComponent {
 	private ComboBox strategy;
 	private final Label formTitle = new Label("New Bet");
 	private Button saveBetButton;
-	
+
 	private final ClickListener saveBetListener = new ClickListener() {
 		private static final long serialVersionUID = 3652412596841159881L;
 		@Override
 		public void buttonClick(ClickEvent event) {
 			if(validateForm()){
-				final Bet bet = new Bet((Horse)meetingsTree.getContainerProperty(meetingsTree.getValue(), "Horse").getValue()
-						, (Strategy)strategy.getContainerProperty(strategy.getValue(), "Strategy").getValue());
-				domainController.saveBet(bet);
-				addBetToTableContainer(incompleteBetsTable.getContainerDataSource(), bet);
+				final Bet bet = new Bet((Horse)BetView.this.meetingsTree.getContainerProperty(BetView.this.meetingsTree.getValue(), "Horse").getValue()
+						, (Strategy)BetView.this.strategy.getContainerProperty(BetView.this.strategy.getValue(), "Strategy").getValue());
+				BetView.this.domainController.saveBet(bet);
+				addBetToTableContainer(BetView.this.incompleteBetsTable.getContainerDataSource(), bet);
 				getWindow().showNotification("Bet Saved", Notification.TYPE_HUMANIZED_MESSAGE);
 			}
 		}
 	};
-	
+
 	private final ClickListener deleteBetListener = new ClickListener() {
 		private static final long serialVersionUID = 3652412596841159881L;
 		@Override
 		public void buttonClick(ClickEvent event) {
-			if(null!= incompleteBetsTable.getValue()){
-				Bet bet = (Bet)incompleteBetsTable.getContainerProperty(incompleteBetsTable.getValue(), "Bet").getValue();
-				domainController.deleteBet(bet);
-				incompleteBetsTable.setValue(null);
+			if(null!= BetView.this.incompleteBetsTable.getValue()){
+				Bet bet = (Bet)BetView.this.incompleteBetsTable.getContainerProperty(BetView.this.incompleteBetsTable.getValue(), "Bet").getValue();
+				BetView.this.domainController.deleteBet(bet);
+				BetView.this.incompleteBetsTable.setValue(null);
 				populateIncompleteBetsTable();
 				getWindow().showNotification("Bet Deleted", Notification.TYPE_HUMANIZED_MESSAGE);
 			}
 		}
 	};
-	
+
 	private final ClickListener clearAllBetsListener = new ClickListener() {
 		private static final long serialVersionUID = 3652412596841159881L;
 		@Override
 		public void buttonClick(ClickEvent event) {
-			domainController.deleteIncompleteBets();
-			incompleteBetsTable.setValue(null);
+			BetView.this.domainController.deleteIncompleteBets();
+			BetView.this.incompleteBetsTable.setValue(null);
 			populateIncompleteBetsTable();
 			getWindow().showNotification("All Bets Cleared", Notification.TYPE_HUMANIZED_MESSAGE);
 		}
 	};
-	
+
 	public BetView(){
-		meetings = domainController.getAllMeetings();
-		strategies = domainController.getAllStrategies();
-		incompleteBets = domainController.getIncompleteBets();
-		completeBets = domainController.getCompleteBets();
+		this.meetings = this.domainController.getAllMeetings();
+		this.strategies = this.domainController.getAllStrategies();
+		this.incompleteBets = this.domainController.getIncompleteBets();
+		this.completeBets = this.domainController.getCompleteBets();
 		buildView();
-    	setCompositionRoot(mainLayout);
+		setCompositionRoot(this.mainLayout);
 	}
-	
+
 	private void buildView(){
-		mainLayout = new HorizontalLayout();
-		mainLayout.setSpacing(true);
-		mainLayout.setMargin(true);
-		
-		formSection = new VerticalLayout();
-		formSection.setSpacing(true);
-		
-		incompleteBetsSection = new VerticalLayout();
-		incompleteBetsSection.setSpacing(true);
-		
-		completeBetsSection = new VerticalLayout();
-		completeBetsSection.setSpacing(true);
-		
-		meetingsTreePanel = new Panel();
-		meetingsTreePanel.setHeight("500px");
-		
-		completeBetsTreePanel = new Panel();
-		completeBetsTreePanel.setHeight("500px");
-		
-		meetingsTree = new Tree("Races", createTreeContainerFromMeetings());
-		
-		completeBetsTree = new Tree("Complete Bets", createTreeContainerFromCompleteBets());
-		
-		strategy = new ComboBox("Strategy", createDropdownContainerFromStrategies());
-		
-		incompleteBetsTable = new Table("Bets", createTableContainerFromIncompleteBets());
-		incompleteBetsTable.setSelectable(true);
-		incompleteBetsTable.setVisibleColumns(INCOMPLETE_BETS_COLUMNS);
-		incompleteBetsTable.setWidth("100%");
-		incompleteBetsTable.setHeight("250px");
-		
-		saveBetButton = new Button("Save Bet", saveBetListener);
-		saveBetButton.setStyleName(BaseTheme.BUTTON_LINK);
-		
-		deleteBetButton = new Button("Delete Bet", deleteBetListener);
-		deleteBetButton.setStyleName(BaseTheme.BUTTON_LINK);
-		
-		clearAllBetsButton = new Button("Clear All Bets", clearAllBetsListener);
-		clearAllBetsButton.setStyleName(BaseTheme.BUTTON_LINK);
-		
-		meetingsTreePanel.addComponent(meetingsTree);
-		
-		completeBetsTreePanel.addComponent(completeBetsTree);
-		
+		this.mainLayout = new HorizontalLayout();
+		this.mainLayout.setSpacing(true);
+		this.mainLayout.setMargin(true);
+
+		this.formSection = new VerticalLayout();
+		this.formSection.setSpacing(true);
+
+		this.incompleteBetsSection = new VerticalLayout();
+		this.incompleteBetsSection.setSpacing(true);
+
+		this.completeBetsSection = new VerticalLayout();
+		this.completeBetsSection.setSpacing(true);
+
+		this.meetingsTreePanel = new Panel();
+		this.meetingsTreePanel.setHeight("500px");
+
+		this.completeBetsTreePanel = new Panel();
+		this.completeBetsTreePanel.setHeight("500px");
+
+		this.meetingsTree = new Tree("Races", createTreeContainerFromMeetings());
+
+		this.completeBetsTree = new Tree("Complete Bets", createTreeContainerFromCompleteBets());
+
+		this.strategy = new ComboBox("Strategy", createDropdownContainerFromStrategies());
+
+		this.incompleteBetsTable = new Table("Bets", createTableContainerFromIncompleteBets());
+		this.incompleteBetsTable.setSelectable(true);
+		this.incompleteBetsTable.setVisibleColumns(INCOMPLETE_BETS_COLUMNS);
+		this.incompleteBetsTable.setWidth("100%");
+		this.incompleteBetsTable.setHeight("250px");
+
+		this.saveBetButton = new Button("Save Bet", this.saveBetListener);
+		this.saveBetButton.setStyleName(BaseTheme.BUTTON_LINK);
+
+		this.deleteBetButton = new Button("Delete Bet", this.deleteBetListener);
+		this.deleteBetButton.setStyleName(BaseTheme.BUTTON_LINK);
+
+		this.clearAllBetsButton = new Button("Clear All Bets", this.clearAllBetsListener);
+		this.clearAllBetsButton.setStyleName(BaseTheme.BUTTON_LINK);
+
+		this.meetingsTreePanel.addComponent(this.meetingsTree);
+
+		this.completeBetsTreePanel.addComponent(this.completeBetsTree);
+
 		setupFormFields();
-		
-		formSection.addComponent(formTitle);
-		formSection.addComponent(meetingsTreePanel);
-		formSection.addComponent(strategy);
-		formSection.addComponent(saveBetButton);
-		
-		incompleteBetsSection.addComponent(incompleteBetsTable);
-		incompleteBetsSection.addComponent(deleteBetButton);
-		incompleteBetsSection.addComponent(clearAllBetsButton);
-		
-		completeBetsSection.addComponent(completeBetsTreePanel);
-		
-		mainLayout.addComponent(incompleteBetsSection);
-		mainLayout.addComponent(formSection);
-		mainLayout.addComponent(completeBetsSection);
-		
+
+		this.formSection.addComponent(this.formTitle);
+		this.formSection.addComponent(this.meetingsTreePanel);
+		this.formSection.addComponent(this.strategy);
+		this.formSection.addComponent(this.saveBetButton);
+
+		this.incompleteBetsSection.addComponent(this.incompleteBetsTable);
+		this.incompleteBetsSection.addComponent(this.deleteBetButton);
+		this.incompleteBetsSection.addComponent(this.clearAllBetsButton);
+
+		this.completeBetsSection.addComponent(this.completeBetsTreePanel);
+
+		this.mainLayout.addComponent(this.incompleteBetsSection);
+		this.mainLayout.addComponent(this.formSection);
+		this.mainLayout.addComponent(this.completeBetsSection);
+
 	}
-	
+
 	public void populateIncompleteBetsTable(){
-		incompleteBets = domainController.getIncompleteBets();
-		incompleteBetsTable.setContainerDataSource(createTableContainerFromIncompleteBets());
-		incompleteBetsTable.setVisibleColumns(INCOMPLETE_BETS_COLUMNS);
+		this.incompleteBets = this.domainController.getIncompleteBets();
+		this.incompleteBetsTable.setContainerDataSource(createTableContainerFromIncompleteBets());
+		this.incompleteBetsTable.setVisibleColumns(INCOMPLETE_BETS_COLUMNS);
 	}
-	
+
 	public void populateCompleteBetsTree(){
-		completeBets = domainController.getCompleteBets();
-		completeBetsTree.setContainerDataSource(createTreeContainerFromCompleteBets());
+		this.completeBets = this.domainController.getCompleteBets();
+		this.completeBetsTree.setContainerDataSource(createTreeContainerFromCompleteBets());
 	}
-	
+
 	public void populateStrategyDropDown(){
-		strategies = domainController.getAllStrategies();
-		strategy.setContainerDataSource(createDropdownContainerFromStrategies());
+		this.strategies = this.domainController.getAllStrategies();
+		this.strategy.setContainerDataSource(createDropdownContainerFromStrategies());
 	}
-	
+
 	private void setupFormFields() {
-		meetingsTree.setItemCaptionPropertyId("Name");
-		meetingsTree.setWidth("100%");
-		meetingsTree.setHeight("100%");
-		meetingsTree.setNullSelectionAllowed(false);
-		meetingsTree.setRequired(true);
-		meetingsTree.setMultiSelect(false);
-		
-		completeBetsTree.setItemCaptionPropertyId("Detail");
-		completeBetsTree.setWidth("100%");
-		completeBetsTree.setHeight("100%");
-		completeBetsTree.setSelectable(false);
-		
-		strategy.setItemCaptionPropertyId("Description");
-		strategy.setNullSelectionAllowed(false);
-		strategy.setRequired(true);
+		this.meetingsTree.setItemCaptionPropertyId("Name");
+		this.meetingsTree.setWidth("100%");
+		this.meetingsTree.setHeight("100%");
+		this.meetingsTree.setNullSelectionAllowed(false);
+		this.meetingsTree.setRequired(true);
+		this.meetingsTree.setMultiSelect(false);
+
+		this.completeBetsTree.setItemCaptionPropertyId("Detail");
+		this.completeBetsTree.setWidth("100%");
+		this.completeBetsTree.setHeight("100%");
+		this.completeBetsTree.setSelectable(false);
+
+		this.strategy.setItemCaptionPropertyId("Description");
+		this.strategy.setNullSelectionAllowed(false);
+		this.strategy.setRequired(true);
 	}
-	
+
 	private boolean validateForm(){
-		return strategy.isValid() && meetingsTree.isValid() && null != meetingsTree.getContainerProperty(meetingsTree.getValue(), "Horse").getValue();
+		return this.strategy.isValid() && this.meetingsTree.isValid() && null != this.meetingsTree.getContainerProperty(this.meetingsTree.getValue(), "Horse").getValue();
 	}
-	
+
 	private Container createTreeContainerFromCompleteBets(){
 		HierarchicalContainer container = new HierarchicalContainer();
 		container.addContainerProperty("Detail", String.class, "");
-		for(Bet bet : completeBets){
+		for(Bet bet : this.completeBets){
 			Object betId = addBetToTreeContainer(container, bet);
-			for(BetLog betLog : bet.getBetLogs())
-			addBetLogToTreeContainer(container, betLog, betId);
+			for(BetLog betLog : bet.getBetLogs()) {
+				addBetLogToTreeContainer(container, betLog, betId);
+			}
 		}
 		return container;
 	}
-	
+
 	private Object addBetToTreeContainer(HierarchicalContainer container, Bet addition) {
 		Object id = container.addItem();
-		container.getContainerProperty(id, "Detail").setValue(addition.getHorse().getRace().getName() 
+		container.getContainerProperty(id, "Detail").setValue(addition.getHorse().getRace().getName()
 				+ " - " + addition.getHorse().getName() + " - " + addition.getStrategy().getDescription());
 		return id;
 	}
-	
+
 	private Object addBetLogToTreeContainer(HierarchicalContainer container, BetLog addition, Object parent) {
 		Object id = container.addItem();
-		container.getContainerProperty(id, "Detail").setValue(DateUtil.toShortString(addition.getPlacedDateTime()) 
-				+ " - £" + addition.getLiability() + " - " + addition.getPrice() + " - " 
+		container.getContainerProperty(id, "Detail").setValue(DateUtil.toShortString(addition.getPlacedDateTime())
+				+ " - £" + addition.getLiability() + " - " + addition.getPrice() + " - "
 				+ (addition.getBetType() == BetType.MOC_EXCHANGE ? "Exchange" : "SP"));
 		container.setParent(id, parent);
 		container.setChildrenAllowed(parent, true);
 		container.setChildrenAllowed(id, false);
 		return id;
 	}
-	
+
 	private Container createTreeContainerFromMeetings(){
 		HierarchicalContainer container = new HierarchicalContainer();
 		container.addContainerProperty("Name", String.class, "");
 		container.addContainerProperty("Horse", Horse.class, null);
-		for(Meeting meeting : meetings){
+		for(Meeting meeting : this.meetings){
 			Object meetingId = addMeetingToTreeContainer(container, meeting);
 			for(Race race : meeting.getRaces()){
 				Object raceId = addRaceToTreeContainer(container, race, meetingId);
@@ -274,7 +275,7 @@ public class BetView extends CustomComponent {
 		container.getContainerProperty(id, "Name").setValue(addition.getName());
 		return id;
 	}
-	
+
 	private Object addRaceToTreeContainer(HierarchicalContainer container, Race addition, Object parent) {
 		Object id = container.addItem();
 		container.getContainerProperty(id, "Name").setValue(addition.getName() + " - " + DateUtil.toShortString(addition.getStartTime()));
@@ -282,11 +283,11 @@ public class BetView extends CustomComponent {
 		container.setChildrenAllowed(parent, true);
 		return id;
 	}
-	
+
 	private Object addHorseToTreeContainer(HierarchicalContainer container, Horse addition, Object parent) {
 		Object id = container.addItem();
-		container.getContainerProperty(id, "Name").setValue(addition.getName() 
-				+ " - B" + BettingUtil.bestPrice(addition.getPrices(), BettingAspect.BACK).getPrice() 
+		container.getContainerProperty(id, "Name").setValue(addition.getName()
+				+ " - B" + BettingUtil.bestPrice(addition.getPrices(), BettingAspect.BACK).getPrice()
 				+ " - L" + BettingUtil.bestPrice(addition.getPrices(), BettingAspect.LAY).getPrice());
 		container.getContainerProperty(id, "Horse").setValue(addition);
 		container.setParent(id, parent);
@@ -294,12 +295,12 @@ public class BetView extends CustomComponent {
 		container.setChildrenAllowed(id, false);
 		return id;
 	}
-	
+
 	private Container createDropdownContainerFromStrategies(){
 		Container container = new IndexedContainer();
 		container.addContainerProperty("Description", String.class, "");
 		container.addContainerProperty("Strategy", Strategy.class, null);
-		for(Strategy strategy : strategies){
+		for(Strategy strategy : this.strategies){
 			addStrategyToDropdownContainer(container, strategy);
 		}
 		return container;
@@ -310,7 +311,7 @@ public class BetView extends CustomComponent {
 		container.getContainerProperty(id, "Description").setValue(addition.getDescription());
 		container.getContainerProperty(id, "Strategy").setValue(addition);
 	}
-	
+
 	private Container createTableContainerFromIncompleteBets(){
 		Container container = new IndexedContainer();
 		List<String> headers = Lists.newArrayList(INCOMPLETE_BETS_COLUMNS);
@@ -318,17 +319,17 @@ public class BetView extends CustomComponent {
 			container.addContainerProperty(header, String.class, "");
 		}
 		container.addContainerProperty("Bet", Bet.class, null);
-		
-		for(Bet bet : incompleteBets){
+
+		for(Bet bet : this.incompleteBets){
 			addBetToTableContainer(container, bet);
 		}
-		
+
 		return container;
 	}
 
 	private void addBetToTableContainer(Container container, Bet addition) {
 		Object id = container.addItem();
-		
+
 		container.getContainerProperty(id, "Race").setValue(addition.getHorse().getRace().getName());
 		container.getContainerProperty(id, "Horse").setValue(addition.getHorse().getName());
 		container.getContainerProperty(id, "Strategy").setValue(addition.getStrategy().getDescription());
