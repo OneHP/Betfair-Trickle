@@ -34,18 +34,18 @@ public class HibernateMarketDaoCustomT {
 	@Ignore
 	public static void main(final String[] args) {
 		final ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-				"classpath:/spring-trickle.xml");
+		"classpath:/spring-trickle.xml");
 		final MarketDao marketDao = (MarketDao) applicationContext
-				.getBean("marketDao");
+		.getBean("marketDao");
 		final HorseDao horseDao = (HorseDao) applicationContext
-			.getBean("horseDao");
+		.getBean("horseDao");
 
 		final Market market = new Market(7483, "Market");
 		final Meeting meeting = new Meeting(234, "Meeting");
-		final Race race = new Race(867, "Race", new LocalDateTime());
+		final Race race = new Race(867, "Race", new LocalDateTime(), "meeting");
 		final Horse horse = new Horse();
 		final Pricing pricing = new Pricing(new BigDecimal("3.45"), new BigDecimal("3090.96"), BettingAspect.BACK);
-		
+
 		horse.setRunnerId(441);
 		horse.setRaceId(867);
 		horse.setRace(race);

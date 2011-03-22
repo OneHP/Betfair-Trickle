@@ -34,45 +34,56 @@ public class Race extends BaseDomainObject {
 	@Id
 	private final int eventId;
 	private final String name;
-//	@Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
+	//	@Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
 	private final LocalDateTime startTime;
 	@OneToMany(fetch=FetchType.EAGER)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexColumn(name="RUNNERS")
 	private List<Horse> runners;
-	
+	private String meetingName;
+
 	public Race(){
-		eventId = 0;
-		name = "";
-		startTime = new LocalDateTime(0);
+		this.eventId = 0;
+		this.name = "";
+		this.startTime = new LocalDateTime(0);
+		this.meetingName = "";
 	}
-	
-	public Race(int eventId, String name, LocalDateTime startTime) {
+
+	public Race(int eventId, String name, LocalDateTime startTime, String meetingName) {
 		this.eventId = eventId;
 		this.name = name;
 		this.startTime = startTime;
+		this.meetingName = meetingName;
 	}
 
 	public int getEventId() {
-		return eventId;
+		return this.eventId;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public LocalDateTime getStartTime() {
-		return startTime;
+		return this.startTime;
 	}
 
 	public List<Horse> getRunners() {
-		return runners;
+		return this.runners;
 	}
-	
+
 	public void addHorse(Horse horse){
-		if(null == runners){
-			runners = Lists.newArrayList();
+		if(null == this.runners){
+			this.runners = Lists.newArrayList();
 		}
-		runners.add(horse);
+		this.runners.add(horse);
+	}
+
+	public void setMeetingName(String meetingName) {
+		this.meetingName = meetingName;
+	}
+
+	public String getMeetingName() {
+		return this.meetingName;
 	}
 }

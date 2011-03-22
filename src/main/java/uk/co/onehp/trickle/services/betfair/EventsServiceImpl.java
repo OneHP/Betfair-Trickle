@@ -41,61 +41,62 @@ public class EventsServiceImpl implements EventsService {
 
 	@Autowired
 	SessionService sessionService;
-	
+
 	@Autowired
 	MarketDao marketDao;
-	
+
 	@Autowired
 	MeetingDao meetingDao;
-	
+
 	@Value("$ukMarketId")
 	private final String ukMarketId = "298251";
-	
+
 	@Value("$meetingIdLimit")
 	private final String meetingIdLimit = "26000000";
-	
+
 	private final Logger log = Logger.getLogger(EventsServiceImpl.class);
-	
+
 	@Override
 	@Transactional
 	public void getEvents(String req) {
-			log.debug("GET EVENTS: " + req);
-			final BFGlobalService_Service service = new BFGlobalService_Service();
-			final BFGlobalService port = service
-					.getBFGlobalService();
-			
-			final GetEventsReq request = new Gson().fromJson(req, GetEventsReq.class);
-			
-			final APIRequestHeader header = new APIRequestHeader();
-			header.setSessionToken(sessionService.getGlobalSessionToken());
-			request.setHeader(header);
-			
-			final GetEventsResp result = port
-					.getEvents(request);
-			
-			if(result.getErrorCode() == GetEventsErrorEnum.OK){
-				sessionService.updateGlobalSession(result.getHeader().getSessionToken());
-				sessionService.updateExchangeSession(result.getHeader().getSessionToken());
-				
-				if(result.getEventParentId() == Integer.parseInt(ukMarketId)){
-					final Market market = new Market(result.getEventParentId(), "");
-					for(BFEvent bfEvent : result.getEventItems().getBFEvent()){
-							if(bfEvent.getEventId()> Integer.parseInt(meetingIdLimit)){
-								final Meeting meeting = new Meeting(bfEvent.getEventId(), bfEvent.getEventName());
-								market.addMeeting(meeting);
-							}
+		this.log.debug("GET EVENTS: " + req);
+		final BFGlobalService_Service service = new BFGlobalService_Service();
+		final BFGlobalService port = service
+		.getBFGlobalService();
+
+		final GetEventsReq request = new Gson().fromJson(req, GetEventsReq.class);
+
+		final APIRequestHeader header = new APIRequestHeader();
+		header.setSessionToken(this.sessionService.getGlobalSessionToken());
+		request.setHeader(header);
+
+		final GetEventsResp result = port
+		.getEvents(request);
+
+		if(result.getErrorCode() == GetEventsErrorEnum.OK){
+			this.sessionService.updateGlobalSession(result.getHeader().getSessionToken());
+			this.sessionService.updateExchangeSession(result.getHeader().getSessionToken());
+
+			if(result.getEventParentId() == Integer.parseInt(this.ukMarketId)){
+				final Market market = new Market(result.getEventParentId(), "");
+				for(BFEvent bfEvent : result.getEventItems().getBFEvent()){
+					if(bfEvent.getEventId()> Integer.parseInt(this.meetingIdLimit)){
+						final Meeting meeting = new Meeting(bfEvent.getEventId(), bfEvent.getEventName());
+						market.addMeeting(meeting);
 					}
-					marketDao.saveOrUpdate(market);
-				}else{
-					final Meeting meeting = meetingDao.getMeeting(result.getEventParentId());
-					for(MarketSummary marketSummary : result.getMarketItems().getMarketSummary()){
-						final Race race = new Race(marketSummary.getMarketId(),marketSummary.getMarketName(),DateUtil.gregorianCalendarToLocalDateTime(marketSummary.getStartTime()));
-						meeting.addRace(race);
-					}
-					meetingDao.saveOrUpdate(meeting);
 				}
+				this.marketDao.saveOrUpdate(market);
+			}else{
+				final Meeting meeting = this.meetingDao.getMeeting(result.getEventParentId());
+				for(MarketSummary marketSummary : result.getMarketItems().getMarketSummary()){
+					final Race race = new Race(marketSummary.getMarketId(),marketSummary.getMarketName(),DateUtil.gregorianCalendarToLocalDateTime(marketSummary.getStartTime())
+							,meeting.getName());
+					meeting.addRace(race);
+				}
+				this.meetingDao.saveOrUpdate(meeting);
 			}
-			log.debug("GET EVENTS: " + result.getErrorCode().toString() + ": " + result.getHeader().getErrorCode());
+		}
+		this.log.debug("GET EVENTS: " + result.getErrorCode().toString() + ": " + result.getHeader().getErrorCode());
 	}
 
 }

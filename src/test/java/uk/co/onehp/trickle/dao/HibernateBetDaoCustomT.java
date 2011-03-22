@@ -29,36 +29,36 @@ public class HibernateBetDaoCustomT {
 	@Ignore
 	public static void main(final String[] args) {
 		final ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-				"classpath:/spring-trickle.xml");
+		"classpath:/spring-trickle.xml");
 		final BetDao betDao = (BetDao) applicationContext
 		.getBean("betDao");
-		
+
 		final RaceDao raceDao = (RaceDao) applicationContext
 		.getBean("raceDao");
 
-		final Race race = new Race(867, "Race", new LocalDateTime(2012,2,22,19,19,0));
-		
+		final Race race = new Race(867, "Race", new LocalDateTime(2012,2,22,19,19,0), "meeting");
+
 		final Horse horse = new Horse();
 		horse.setRunnerId(441);
 		horse.setRaceId(867);
-		
+
 		horse.setRace(race);
 		race.addHorse(horse);
 
 		final Strategy strategy1 = new Strategy();
 		strategy1.setBetSecondsBeforeStartTime(Lists.newArrayList(120,270,600));
-		
+
 		final Strategy strategy2 = new Strategy();
 		strategy2.setBetSecondsBeforeStartTime(Lists.newArrayList(120,270,700));
-		
+
 		raceDao.saveOrUpdate(race);
-		
+
 		final Bet bet1 = new Bet(horse, strategy1);
 		betDao.saveOrUpdate(bet1);
-		
+
 		final Bet bet2 = new Bet(horse, strategy2);
 		betDao.saveOrUpdate(bet2);
-		
+
 		System.out.println(betDao.getBetsToPlace());
 	}
 

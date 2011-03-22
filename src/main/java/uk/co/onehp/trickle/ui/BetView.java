@@ -12,6 +12,8 @@
  */
 package uk.co.onehp.trickle.ui;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +52,7 @@ import com.vaadin.ui.themes.BaseTheme;
 @Configurable(preConstruction=true)
 public class BetView extends CustomComponent {
 	private static final long serialVersionUID = 37912938374833758L;
-	private static final String [] INCOMPLETE_BETS_COLUMNS = {"Race", "Horse", "Strategy"};
+	private static final String [] INCOMPLETE_BETS_COLUMNS = {"Meeting","Time","Race", "Horse", "Strategy"};
 
 	@Autowired
 	private DomainController domainController;
@@ -137,10 +139,10 @@ public class BetView extends CustomComponent {
 		this.completeBetsSection.setSpacing(true);
 
 		this.meetingsTreePanel = new Panel();
-		this.meetingsTreePanel.setHeight("500px");
+		this.meetingsTreePanel.setHeight("350px");
 
 		this.completeBetsTreePanel = new Panel();
-		this.completeBetsTreePanel.setHeight("500px");
+		this.completeBetsTreePanel.setHeight("350px");
 
 		this.meetingsTree = new Tree("Races", createTreeContainerFromMeetings());
 
@@ -152,7 +154,7 @@ public class BetView extends CustomComponent {
 		this.incompleteBetsTable.setSelectable(true);
 		this.incompleteBetsTable.setVisibleColumns(INCOMPLETE_BETS_COLUMNS);
 		this.incompleteBetsTable.setWidth("100%");
-		this.incompleteBetsTable.setHeight("250px");
+		this.incompleteBetsTable.setHeight("350px");
 
 		this.saveBetButton = new Button("Save Bet", this.saveBetListener);
 		this.saveBetButton.setStyleName(BaseTheme.BUTTON_LINK);
@@ -199,6 +201,12 @@ public class BetView extends CustomComponent {
 
 	public void populateStrategyDropDown(){
 		this.strategies = this.domainController.getAllStrategies();
+		Collections.sort(this.strategies, new Comparator<Strategy>() {
+			@Override
+			public int compare(Strategy o1, Strategy o2) {
+				return o1.getDescription().compareTo(o2.getDescription());
+			}
+		});
 		this.strategy.setContainerDataSource(createDropdownContainerFromStrategies());
 	}
 
@@ -330,7 +338,9 @@ public class BetView extends CustomComponent {
 	private void addBetToTableContainer(Container container, Bet addition) {
 		Object id = container.addItem();
 
+		container.getContainerProperty(id, "Meeting").setValue(addition.getHorse().getRace().getMeetingName());
 		container.getContainerProperty(id, "Race").setValue(addition.getHorse().getRace().getName());
+		container.getContainerProperty(id, "Time").setValue(DateUtil.toShortString(addition.getHorse().getRace().getStartTime()));
 		container.getContainerProperty(id, "Horse").setValue(addition.getHorse().getName());
 		container.getContainerProperty(id, "Strategy").setValue(addition.getStrategy().getDescription());
 		container.getContainerProperty(id, "Bet").setValue(addition);
