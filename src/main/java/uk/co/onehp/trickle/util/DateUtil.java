@@ -25,7 +25,7 @@ public class DateUtil {
 	public static LocalDateTime gregorianCalendarToLocalDateTime(XMLGregorianCalendar calendar){
 		return new LocalDateTime(calendar.getYear(), calendar.getMonth(), calendar.getDay(), calendar.getHour(), calendar.getMinute(), calendar.getSecond());
 	}
-	
+
 	public static int getMostSeconds(List<Integer> seconds){
 		Collections.sort(seconds, new Comparator<Integer>() {
 			@Override
@@ -35,11 +35,12 @@ public class DateUtil {
 		});
 		return seconds.get(0);
 	}
-	
+
 	public static String toShortString(LocalDateTime localDateTime){
-		return String.format("%s %s %s:%s", localDateTime.toDateTime().monthOfYear().getAsShortText()
-				, localDateTime.toDateTime().dayOfMonth().getAsText(), localDateTime.getHourOfDay()
-				, localDateTime.getMinuteOfHour());
+		LocalDateTime britishLocalDateTime = localDateTime.plusHours(1);
+		return String.format("%s %s %s:%s", britishLocalDateTime.toDateTime().monthOfYear().getAsShortText()
+				, britishLocalDateTime.toDateTime().dayOfMonth().getAsText(), britishLocalDateTime.getHourOfDay()
+				, britishLocalDateTime.getMinuteOfHour());
 	}
-	
+
 }

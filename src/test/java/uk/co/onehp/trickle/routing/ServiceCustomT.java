@@ -43,8 +43,8 @@ public class ServiceCustomT {
 
 		//		scheduledService.login();
 		//		scheduledService.getUkMarket();
-		scheduledService.getAllMeetings();
-		//		scheduledService.getAllRaces();
+		//		scheduledService.getAllMeetings();
+		scheduledService.getAllRaces();
 		//		scheduledService.getAllRacePrices();
 
 		//		final Strategy strategy = new Strategy();
