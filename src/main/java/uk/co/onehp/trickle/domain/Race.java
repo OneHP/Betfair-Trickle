@@ -28,25 +28,26 @@ import org.joda.time.LocalDateTime;
 import com.google.common.collect.Lists;
 
 @Entity
-@NamedQuery(name="ALL_RACES", query="FROM Race")
+@NamedQuery(name="ALL_RACES", query="FROM Race WHERE complete = 'false'")
 public class Race extends BaseDomainObject {
 
 	@Id
 	private final int eventId;
 	private final String name;
-	//	@Type(type="org.joda.time.contrib.hibernate.PersistentDateTime")
 	private final LocalDateTime startTime;
 	@OneToMany(fetch=FetchType.EAGER)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexColumn(name="RUNNERS")
 	private List<Horse> runners;
 	private String meetingName;
+	private boolean complete;
 
 	public Race(){
 		this.eventId = 0;
 		this.name = "";
 		this.startTime = new LocalDateTime(0);
 		this.meetingName = "";
+		this.complete = false;
 	}
 
 	public Race(int eventId, String name, LocalDateTime startTime, String meetingName) {
@@ -54,6 +55,11 @@ public class Race extends BaseDomainObject {
 		this.name = name;
 		this.startTime = startTime;
 		this.meetingName = meetingName;
+		this.complete = false;
+	}
+
+	public void markAsComplete(){
+		this.complete = true;
 	}
 
 	public int getEventId() {

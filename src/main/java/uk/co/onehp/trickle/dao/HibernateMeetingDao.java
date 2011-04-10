@@ -41,4 +41,8 @@ public class HibernateMeetingDao extends HibernateBaseDao implements MeetingDao 
 		return this.hibernateTemplate.findByNamedQuery("ALL_MEETINGS");
 	}
 
+	@Override
+	public void delete(Meeting meeting) {
+		super.delete(meeting);
+	}
 }

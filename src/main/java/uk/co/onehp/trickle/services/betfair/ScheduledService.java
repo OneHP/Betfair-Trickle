@@ -14,10 +14,12 @@ package uk.co.onehp.trickle.services.betfair;
 
 public interface ScheduledService {
 	void login();
+	void archiveMeetings();
 	void getUkMarket();
 	void getAllMeetings();
 	void getAllRaces();
 	void getAllRacePrices();
+	void removeProblemMeetings();
 	void refreshNextBetSchedule();
 	void placeBets();
 	void getPricesForUpcomingBets();

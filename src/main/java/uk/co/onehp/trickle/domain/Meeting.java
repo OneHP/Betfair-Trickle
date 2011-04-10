@@ -27,7 +27,7 @@ import org.hibernate.annotations.NamedQuery;
 import com.google.common.collect.Lists;
 
 @Entity
-@NamedQuery(name="ALL_MEETINGS", query="FROM Meeting")
+@NamedQuery(name="ALL_MEETINGS", query="FROM Meeting WHERE complete = 'false'")
 public class Meeting extends BaseDomainObject {
 
 	@Id
@@ -37,34 +37,41 @@ public class Meeting extends BaseDomainObject {
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexColumn(name="RACES")
 	private List<Race> races;
+	private boolean complete;
 
 	public Meeting(){
-		eventId = 0;
-		name = "";
+		this.eventId = 0;
+		this.name = "";
+		this.complete = false;
 	}
-	
+
 	public Meeting(int eventId, String name){
 		this.eventId = eventId;
 		this.name = name;
+		this.complete = false;
 	}
-	
+
+	public void markAsComplete(){
+		this.complete = true;
+	}
+
 	public int getEventId() {
-		return eventId;
+		return this.eventId;
 	}
 
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public List<Race> getRaces() {
-		return races;
+		return this.races;
 	}
-	
+
 	public void addRace(Race race){
-		if(null == races){
-			races = Lists.newArrayList();
+		if(null == this.races){
+			this.races = Lists.newArrayList();
 		}
-		races.add(race);
+		this.races.add(race);
 	}
 }

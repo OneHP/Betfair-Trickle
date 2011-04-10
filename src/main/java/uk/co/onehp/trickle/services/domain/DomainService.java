@@ -35,4 +35,6 @@ public interface DomainService {
 	void deleteStrategy(Strategy strategy);
 	void deleteBet(Bet bet);
 	void deleteIncompleteBets();
+	void archiveMeetings();
+	void removeProblemMeetings();
 }

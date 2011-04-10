@@ -41,10 +41,10 @@ public class ServiceCustomT {
 		//
 		//		System.out.println(domainService.getCompleteBets());
 
-		//		scheduledService.login();
+		scheduledService.login();
 		//		scheduledService.getUkMarket();
 		//		scheduledService.getAllMeetings();
-		scheduledService.getAllRaces();
+		//		scheduledService.getAllRaces();
 		//		scheduledService.getAllRacePrices();
 
 		//		final Strategy strategy = new Strategy();

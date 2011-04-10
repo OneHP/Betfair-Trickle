@@ -30,90 +30,104 @@ import uk.co.onehp.trickle.services.domain.DomainService;
 public class ScheduledServiceImpl implements ScheduledService {
 
 	private String nextBetSchedule;
-	
+
 	@Autowired
 	BetfairService betfairService;
-	
+
 	@Autowired
 	DomainService domainService;
-	
+
 	Logger log = Logger.getLogger(ScheduledServiceImpl.class);
-	
+
+
 	@Override
-	@Scheduled(cron="0 0 0 * * *")
-	public void login(){
-		betfairService.login();
-	}
-	
-	@Override
-	@Scheduled(cron="0 1 0 * * *")
-	public void getUkMarket() {
-		betfairService.getUkMarket();
+	@Scheduled(cron="0 30 0 * * *")
+	public void archiveMeetings() {
+		this.domainService.archiveMeetings();
 	}
 
 	@Override
-	@Scheduled(cron="0 2 0 * * *")
+	@Scheduled(cron="0 0 1 * * *")
+	public void login(){
+		this.betfairService.login();
+	}
+
+	@Override
+	@Scheduled(cron="0 1 1 * * *")
+	public void getUkMarket() {
+		this.betfairService.getUkMarket();
+	}
+
+	@Override
+	@Scheduled(cron="0 2 1 * * *")
 	public void getAllMeetings() {
-		for(Meeting meeting : domainService.getAllMeetings()){
+		for(Meeting meeting : this.domainService.getAllMeetings()){
 			if(meeting.getRaces() == null || meeting.getRaces().size() == 0){
-				betfairService.getMeeting(meeting.getEventId());
+				this.betfairService.getMeeting(meeting.getEventId());
 			}
 		}
 	}
 
 	@Override
-	@Scheduled(cron="0 5 0 * * *")
+	@Scheduled(cron="0 5 1 * * *")
 	public void getAllRaces() {
 		LocalDateTime now = new LocalDateTime();
-		for(Race race : domainService.getAllRaces()){
+		for(Race race : this.domainService.getAllRaces()){
 			if(race.getStartTime().isAfter(now)){
-				betfairService.getRace(race.getEventId());
+				this.betfairService.getRace(race.getEventId());
 			}
 		}
 	}
 
 	@Override
-	@Scheduled(cron="0 45 0 * * *")
+	@Scheduled(cron="0 0 2 * * *")
 	public void getAllRacePrices() {
 		LocalDateTime now = new LocalDateTime();
-		for(Race race : domainService.getAllRaces()){
+		for(Race race : this.domainService.getAllRaces()){
 			if(race.getStartTime().isAfter(now)){
-				betfairService.getRacePrices(race.getEventId());
+				this.betfairService.getRacePrices(race.getEventId());
 			}
 		}
+	}
+
+	@Override
+	@Scheduled(cron="0 0 4 * * *")
+	public void removeProblemMeetings(){
+		this.domainService.removeProblemMeetings();
 	}
 
 	@Override
 	public void refreshNextBetSchedule() {
-		LocalDateTime nextBetTime = domainService.getNextBetTime();
-		nextBetSchedule = String.format("%s %s %s %s %s %s", nextBetTime.getSecondOfMinute(), nextBetTime.getMinuteOfHour()
+		LocalDateTime nextBetTime = this.domainService.getNextBetTime();
+		this.nextBetSchedule = String.format("%s %s %s %s %s %s", nextBetTime.getSecondOfMinute(), nextBetTime.getMinuteOfHour()
 				, nextBetTime.getHourOfDay(), nextBetTime.getDayOfMonth(), nextBetTime.getMonthOfYear(), nextBetTime.getYear());
-		log.debug(nextBetSchedule);
+		this.log.debug(this.nextBetSchedule);
 	}
 
 	@Override
-	@Scheduled(cron="* * 7-21 * * * ")
+	@Scheduled(cron="* * 10-22 * * * ")
 	@Transactional
 	public void placeBets() {
-		List<Bet> bets = domainService.getBetsToPlace();
+		List<Bet> bets = this.domainService.getBetsToPlace();
 		final LocalDateTime now = new LocalDateTime();
 		for(Bet bet : bets){
 			for(Integer secondsBeforeOff : bet.getUnprocessedTimings()){
 				if(now.isAfter(bet.getHorse().getRace().getStartTime().minusSeconds(secondsBeforeOff))){
 					bet.markTimingProcessed(secondsBeforeOff);
-					domainService.updateBet(bet);
-					betfairService.placeBet(bet);
+					this.domainService.updateBet(bet);
+					this.betfairService.placeBet(bet);
 				}
 			}
 		}
 	}
 
 	@Override
-	@Scheduled(cron="*/5 * 7-21 * * * ")
+	@Scheduled(cron="*/5 * 10-22 * * * ")
 	public void getPricesForUpcomingBets() {
-		List<Bet> bets = domainService.getUpcomingBetsToPlace();
+		List<Bet> bets = this.domainService.getUpcomingBetsToPlace();
 		for(Bet bet : bets){
-			betfairService.getRacePrices(bet.getHorse().getRaceId());
+			this.betfairService.getRacePrices(bet.getHorse().getRaceId());
 		}
 	}
+
 }
