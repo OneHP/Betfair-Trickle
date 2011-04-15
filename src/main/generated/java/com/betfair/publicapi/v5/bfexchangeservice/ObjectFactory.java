@@ -30,14 +30,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CancelBetsResponse }
-     * 
-     */
-    public CancelBetsResponse createCancelBetsResponse() {
-        return new CancelBetsResponse();
-    }
-
-    /**
      * Create an instance of {@link GetBetHistoryResponse }
      * 
      */
@@ -59,6 +51,14 @@ public class ObjectFactory {
      */
     public Heartbeat createHeartbeat() {
         return new Heartbeat();
+    }
+
+    /**
+     * Create an instance of {@link GetSilksResponse }
+     * 
+     */
+    public GetSilksResponse createGetSilksResponse() {
+        return new GetSilksResponse();
     }
 
     /**
@@ -126,6 +126,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CancelBetsResponse }
+     * 
+     */
+    public CancelBetsResponse createCancelBetsResponse() {
+        return new CancelBetsResponse();
+    }
+
+    /**
      * Create an instance of {@link GetMarketInfoResponse }
      * 
      */
@@ -147,14 +155,6 @@ public class ObjectFactory {
      */
     public GetAllMarketsResponse createGetAllMarketsResponse() {
         return new GetAllMarketsResponse();
-    }
-
-    /**
-     * Create an instance of {@link GetMarketTradedVolumeResponse }
-     * 
-     */
-    public GetMarketTradedVolumeResponse createGetMarketTradedVolumeResponse() {
-        return new GetMarketTradedVolumeResponse();
     }
 
     /**
@@ -198,14 +198,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetCurrentBetsResponse }
-     * 
-     */
-    public GetCurrentBetsResponse createGetCurrentBetsResponse() {
-        return new GetCurrentBetsResponse();
-    }
-
-    /**
      * Create an instance of {@link GetAccountStatementResponse }
      * 
      */
@@ -235,14 +227,6 @@ public class ObjectFactory {
      */
     public GetCoupon createGetCoupon() {
         return new GetCoupon();
-    }
-
-    /**
-     * Create an instance of {@link GetInPlayMarkets }
-     * 
-     */
-    public GetInPlayMarkets createGetInPlayMarkets() {
-        return new GetInPlayMarkets();
     }
 
     /**
@@ -358,11 +342,27 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link GetMarketTradedVolumeResponse }
+     * 
+     */
+    public GetMarketTradedVolumeResponse createGetMarketTradedVolumeResponse() {
+        return new GetMarketTradedVolumeResponse();
+    }
+
+    /**
      * Create an instance of {@link GetMarketResponse }
      * 
      */
     public GetMarketResponse createGetMarketResponse() {
         return new GetMarketResponse();
+    }
+
+    /**
+     * Create an instance of {@link GetMUBetsResponse }
+     * 
+     */
+    public GetMUBetsResponse createGetMUBetsResponse() {
+        return new GetMUBetsResponse();
     }
 
     /**
@@ -374,11 +374,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetMUBetsResponse }
+     * Create an instance of {@link GetAccountFunds }
      * 
      */
-    public GetMUBetsResponse createGetMUBetsResponse() {
-        return new GetMUBetsResponse();
+    public GetAccountFunds createGetAccountFunds() {
+        return new GetAccountFunds();
     }
 
     /**
@@ -422,11 +422,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GetAccountFunds }
+     * Create an instance of {@link GetInPlayMarkets }
      * 
      */
-    public GetAccountFunds createGetAccountFunds() {
-        return new GetAccountFunds();
+    public GetInPlayMarkets createGetInPlayMarkets() {
+        return new GetInPlayMarkets();
     }
 
     /**
@@ -454,6 +454,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link GetCurrentBetsResponse }
+     * 
+     */
+    public GetCurrentBetsResponse createGetCurrentBetsResponse() {
+        return new GetCurrentBetsResponse();
+    }
+
+    /**
      * Create an instance of {@link CancelBetsByMarket }
      * 
      */
@@ -475,14 +483,6 @@ public class ObjectFactory {
      */
     public GetBetMatchesLiteResponse createGetBetMatchesLiteResponse() {
         return new GetBetMatchesLiteResponse();
-    }
-
-    /**
-     * Create an instance of {@link GetSilksResponse }
-     * 
-     */
-    public GetSilksResponse createGetSilksResponse() {
-        return new GetSilksResponse();
     }
 
     /**

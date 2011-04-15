@@ -148,7 +148,7 @@ public class DomainServiceImpl implements DomainService {
 				meeting.getRaces().get(0).getRunners().get(0).getName();
 			}catch (NullPointerException nullPointer) {
 				this.meetingDao.delete(meeting);
-			}catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBounds){
+			}catch (IndexOutOfBoundsException indexOutOfBounds){
 				this.meetingDao.delete(meeting);
 			}
 		}
