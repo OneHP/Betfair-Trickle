@@ -29,6 +29,8 @@ import uk.co.onehp.trickle.domain.Race;
 import uk.co.onehp.trickle.domain.Strategy;
 import uk.co.onehp.trickle.util.DateUtil;
 
+import com.google.common.collect.Lists;
+
 @Service("domainService")
 public class DomainServiceImpl implements DomainService {
 
@@ -101,8 +103,13 @@ public class DomainServiceImpl implements DomainService {
 
 	@Override
 	@Transactional
-	public void deleteStrategy(Strategy strategy) {
-		this.strategyDao.deleteStrategy(strategy);
+	public boolean deleteStrategy(Strategy strategy) {
+		if(!strategyInUse(strategy)){
+			this.strategyDao.deleteStrategy(strategy);
+			return true;
+		}
+		return false;
+
 	}
 
 	@Override
@@ -152,6 +159,24 @@ public class DomainServiceImpl implements DomainService {
 				this.meetingDao.delete(meeting);
 			}
 		}
+	}
+
+	@Override
+	@Transactional
+	public boolean strategyInUse(Strategy strategy) {
+		List<Bet> incompleteBets = this.betDao.getIncompleteBets();
+		List<Strategy> strategiesInUse = Lists.newArrayList();
+		for(Bet bet : incompleteBets){
+			if(!strategiesInUse.contains(bet.getStrategy())){
+				strategiesInUse.add(bet.getStrategy());
+			}
+		}
+		for(Strategy strategyInUse : strategiesInUse){
+			if(strategyInUse.getId() == strategy.getId()){
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -32,9 +32,10 @@ public interface DomainService {
 	void updateBet(Bet bet);
 	List<Strategy> getAllStrategies();
 	void saveStrategy(Strategy strategy);
-	void deleteStrategy(Strategy strategy);
+	boolean deleteStrategy(Strategy strategy);
 	void deleteBet(Bet bet);
 	void deleteIncompleteBets();
 	void archiveMeetings();
 	void removeProblemMeetings();
+	boolean strategyInUse(Strategy strategy);
 }

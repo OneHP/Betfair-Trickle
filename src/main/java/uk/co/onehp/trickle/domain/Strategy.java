@@ -25,9 +25,9 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NamedQuery;
 
 @Entity
-@NamedQuery(name="ALL_STRATEGIES", query="FROM Strategy")
+@NamedQuery(name="ALL_STRATEGIES", query="FROM Strategy WHERE deleted = 'false'")
 public class Strategy extends BaseDomainObject {
-	
+
 	@Id
 	@GenericGenerator(name = "generator", strategy = "increment")
 	@GeneratedValue(generator = "generator")
@@ -40,17 +40,22 @@ public class Strategy extends BaseDomainObject {
 	private int chasePriceByTick;
 	@CollectionOfElements(fetch=FetchType.EAGER)
 	private List<Integer> betSecondsBeforeStartTime;
+	private boolean deleted;
+
+	public void markDeleted(){
+		this.deleted = true;
+	}
 
 	public void setId(int id) {
 		this.id = id;
 	}
 
 	public int getId() {
-		return id;
+		return this.id;
 	}
 
 	public BigDecimal getLiability() {
-		return liability;
+		return this.liability;
 	}
 
 	public void setLiability(BigDecimal liability) {
@@ -58,7 +63,7 @@ public class Strategy extends BaseDomainObject {
 	}
 
 	public BettingAspect getAspect() {
-		return aspect;
+		return this.aspect;
 	}
 
 	public void setAspect(BettingAspect aspect) {
@@ -70,11 +75,11 @@ public class Strategy extends BaseDomainObject {
 	}
 
 	public int getChasePriceByTick() {
-		return chasePriceByTick;
+		return this.chasePriceByTick;
 	}
 
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
 	public void setDescription(String description) {
@@ -82,7 +87,7 @@ public class Strategy extends BaseDomainObject {
 	}
 
 	public BigDecimal getMinOdds() {
-		return minOdds;
+		return this.minOdds;
 	}
 
 	public void setMinOdds(BigDecimal minOdds) {
@@ -90,7 +95,7 @@ public class Strategy extends BaseDomainObject {
 	}
 
 	public BigDecimal getMaxOdds() {
-		return maxOdds;
+		return this.maxOdds;
 	}
 
 	public void setMaxOdds(BigDecimal maxOdds) {
@@ -98,7 +103,7 @@ public class Strategy extends BaseDomainObject {
 	}
 
 	public List<Integer> getBetSecondsBeforeStartTime() {
-		return betSecondsBeforeStartTime;
+		return this.betSecondsBeforeStartTime;
 	}
 
 	public void setBetSecondsBeforeStartTime(List<Integer> betSecondsBeforeStartTime) {

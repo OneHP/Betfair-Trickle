@@ -25,7 +25,7 @@ public interface DomainController {
 	List<Meeting> getAllMeetings();
 	List<Bet> getIncompleteBets();
 	List<Bet> getCompleteBets();
-	void deleteStrategy(Strategy strategy);
+	boolean deleteStrategy(Strategy strategy);
 	void deleteBet(Bet bet);
 	void deleteIncompleteBets();
 }

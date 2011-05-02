@@ -50,18 +50,18 @@ public class StrategyView extends CustomComponent{
 	private static final String COMMON_FIELD_WIDTH = "12em";
 	private static final String DOUBLE_FIELD_WIDTH = "24em";
 	private static final String [] COLUMNS = {"Description", "Aspect", "Liability", "Chase by Tick", "Min Odds", "Max Odds", "Splits"};
-	
+
 	@Autowired
 	private DomainController domainController;
-	
+
 	private HorizontalLayout mainLayout;
 	private List<Strategy> strategies;
 	private Table strategiesTable;
 	private Button deleteStrategyButton;
 	private VerticalLayout tableSection;
 	private VerticalLayout formSection;
-	private Button saveStrategyButton; 
-	
+	private Button saveStrategyButton;
+
 	private final Label formTitle = new Label("New Strategy");
 	private final TextField description = new TextField("Description");
 	private final TextField liability = new TextField("Liability");
@@ -69,9 +69,9 @@ public class StrategyView extends CustomComponent{
 	private final TextField minOdds = new TextField("Minimum Odds");
 	private final TextField maxOdds = new TextField("Maximum Odds");
 	private final OptionGroup aspect = new OptionGroup("Aspect", Lists.newArrayList(BettingAspect.BACK, BettingAspect.LAY));
-	private final TwinColSelect splits =  new TwinColSelect("Place bet __ seconds before start", 
+	private final TwinColSelect splits =  new TwinColSelect("Place bet __ seconds before start",
 			Lists.newArrayList(30,60,90,120,150,180,210,240,270,300,360,420,480,540,600));
-	
+
 	private final ClickListener saveStrategyListener = new ClickListener() {
 		private static final long serialVersionUID = 3652412596841159881L;
 		@SuppressWarnings("unchecked")
@@ -79,158 +79,161 @@ public class StrategyView extends CustomComponent{
 		public void buttonClick(ClickEvent event) {
 			if(validateForm()){
 				Strategy strategy = new Strategy();
-				strategy.setDescription((String) description.getValue());
-				strategy.setAspect((BettingAspect) aspect.getValue());
-				strategy.setChasePriceByTick(((Double)chase.getValue()).intValue());
-				strategy.setLiability(new BigDecimal((String)liability.getValue()));
-				strategy.setMinOdds(new BigDecimal((String)minOdds.getValue()));
-				strategy.setMaxOdds(new BigDecimal((String)maxOdds.getValue()));
-				strategy.setBetSecondsBeforeStartTime(Lists.newArrayList((Collection<Integer>) splits.getValue()));
-				domainController.saveStrategy(strategy);
+				strategy.setDescription((String) StrategyView.this.description.getValue());
+				strategy.setAspect((BettingAspect) StrategyView.this.aspect.getValue());
+				strategy.setChasePriceByTick(((Double)StrategyView.this.chase.getValue()).intValue());
+				strategy.setLiability(new BigDecimal((String)StrategyView.this.liability.getValue()));
+				strategy.setMinOdds(new BigDecimal((String)StrategyView.this.minOdds.getValue()));
+				strategy.setMaxOdds(new BigDecimal((String)StrategyView.this.maxOdds.getValue()));
+				strategy.setBetSecondsBeforeStartTime(Lists.newArrayList((Collection<Integer>) StrategyView.this.splits.getValue()));
+				StrategyView.this.domainController.saveStrategy(strategy);
 				populateStrategiesTable();
 				getWindow().showNotification("Strategy Saved", Notification.TYPE_HUMANIZED_MESSAGE);
 				resetForm();
 			}
 		}
 	};
-	
+
 	private final ClickListener deleteStrategyListener = new ClickListener() {
 		private static final long serialVersionUID = 3652412596841159881L;
 		@Override
 		public void buttonClick(ClickEvent event) {
-			if(null!= strategiesTable.getValue()){
-				Strategy strategy = (Strategy)strategiesTable.getContainerProperty(strategiesTable.getValue(), "Strategy").getValue();
-				domainController.deleteStrategy(strategy);
-				strategiesTable.setValue(null);
-				populateStrategiesTable();
-				getWindow().showNotification("Strategy Deleted", Notification.TYPE_HUMANIZED_MESSAGE);
+			if(null!= StrategyView.this.strategiesTable.getValue()){
+				Strategy strategy = (Strategy)StrategyView.this.strategiesTable.getContainerProperty(StrategyView.this.strategiesTable.getValue(), "Strategy").getValue();
+				if(StrategyView.this.domainController.deleteStrategy(strategy)){
+					StrategyView.this.strategiesTable.setValue(null);
+					populateStrategiesTable();
+					getWindow().showNotification("Strategy Deleted", Notification.TYPE_HUMANIZED_MESSAGE);
+				}else{
+					getWindow().showNotification("Strategy is currently in use, cannot delete", Notification.TYPE_WARNING_MESSAGE);
+				}
 			}
 		}
 	};
-	
-	public StrategyView(){
-    	strategies = domainController.getAllStrategies();
-		buildView();
-    	setCompositionRoot(mainLayout);
-	}
-	
-	private void buildView(){
-		
-		mainLayout = new HorizontalLayout();
-		mainLayout.setSpacing(true);
-		mainLayout.setMargin(true);
-		
-		formSection = new VerticalLayout();
-		formSection.setSpacing(true);
-		
-		tableSection = new VerticalLayout();
-		tableSection.setSpacing(true);
-		
-		strategiesTable = new Table("Strategies", createContainerFromStrategies());
-		strategiesTable.setSelectable(true);
-		strategiesTable.setVisibleColumns(COLUMNS);
-		strategiesTable.setWidth("100%");
-		strategiesTable.setHeight("250px");
-		
-		saveStrategyButton = new Button("Save Strategy", saveStrategyListener);
-		saveStrategyButton.setStyleName(BaseTheme.BUTTON_LINK);
-		
-		deleteStrategyButton = new Button("Delete Strategy", deleteStrategyListener);
-		deleteStrategyButton.setStyleName(BaseTheme.BUTTON_LINK);
-		
-		setupFormFields();
-		
-		formSection.addComponent(formTitle);
-		formSection.addComponent(description);
-		formSection.addComponent(aspect);
-		formSection.addComponent(liability);
-		formSection.addComponent(chase);
-		formSection.addComponent(minOdds);
-		formSection.addComponent(maxOdds);
-		formSection.addComponent(splits);
-		formSection.addComponent(saveStrategyButton);
-		
-		tableSection.addComponent(strategiesTable);
-		tableSection.addComponent(deleteStrategyButton);
 
-		mainLayout.addComponent(tableSection);
-		mainLayout.addComponent(formSection);
+	public StrategyView(){
+		this.strategies = this.domainController.getAllStrategies();
+		buildView();
+		setCompositionRoot(this.mainLayout);
 	}
-	
+
+	private void buildView(){
+
+		this.mainLayout = new HorizontalLayout();
+		this.mainLayout.setSpacing(true);
+		this.mainLayout.setMargin(true);
+
+		this.formSection = new VerticalLayout();
+		this.formSection.setSpacing(true);
+
+		this.tableSection = new VerticalLayout();
+		this.tableSection.setSpacing(true);
+
+		this.strategiesTable = new Table("Strategies", createContainerFromStrategies());
+		this.strategiesTable.setSelectable(true);
+		this.strategiesTable.setVisibleColumns(COLUMNS);
+		this.strategiesTable.setWidth("100%");
+		this.strategiesTable.setHeight("250px");
+
+		this.saveStrategyButton = new Button("Save Strategy", this.saveStrategyListener);
+		this.saveStrategyButton.setStyleName(BaseTheme.BUTTON_LINK);
+
+		this.deleteStrategyButton = new Button("Delete Strategy", this.deleteStrategyListener);
+		this.deleteStrategyButton.setStyleName(BaseTheme.BUTTON_LINK);
+
+		setupFormFields();
+
+		this.formSection.addComponent(this.formTitle);
+		this.formSection.addComponent(this.description);
+		this.formSection.addComponent(this.aspect);
+		this.formSection.addComponent(this.liability);
+		this.formSection.addComponent(this.chase);
+		this.formSection.addComponent(this.minOdds);
+		this.formSection.addComponent(this.maxOdds);
+		this.formSection.addComponent(this.splits);
+		this.formSection.addComponent(this.saveStrategyButton);
+
+		this.tableSection.addComponent(this.strategiesTable);
+		this.tableSection.addComponent(this.deleteStrategyButton);
+
+		this.mainLayout.addComponent(this.tableSection);
+		this.mainLayout.addComponent(this.formSection);
+	}
+
 	public void populateStrategiesTable(){
-		strategies = domainController.getAllStrategies();
-		strategiesTable.setContainerDataSource(createContainerFromStrategies());
-		strategiesTable.setVisibleColumns(COLUMNS);
+		this.strategies = this.domainController.getAllStrategies();
+		this.strategiesTable.setContainerDataSource(createContainerFromStrategies());
+		this.strategiesTable.setVisibleColumns(COLUMNS);
 	}
-	
+
 	private void resetForm(){
-		description.setValue(null);
-		aspect.setValue(null);
-		liability.setValue(null);
-		minOdds.setValue(null);
-		maxOdds.setValue(null);
-		splits.setValue(null);
+		this.description.setValue(null);
+		this.aspect.setValue(null);
+		this.liability.setValue(null);
+		this.minOdds.setValue(null);
+		this.maxOdds.setValue(null);
+		this.splits.setValue(null);
 	}
-	
+
 	private void setupFormFields() {
-		aspect.setNullSelectionAllowed(false);
-		aspect.setImmediate(true);
-		aspect.setWidth(COMMON_FIELD_WIDTH);
-		aspect.setRequired(true);
-		
-		splits.setRows(8);
-		splits.setNullSelectionAllowed(false);
-		splits.setWidth(DOUBLE_FIELD_WIDTH);
-		splits.setMultiSelect(true);
-		splits.setRequired(true);
-		
-		setupTextField(description);
-		description.addValidator(new StringLengthValidator("Decription must be 3-255 characters", 3, 255, false));
-		description.setWidth(DOUBLE_FIELD_WIDTH);
-		
-		setupTextField(liability);
-		liability.addValidator(new RegexpValidator("[1-9][0-9]*(\\.[0-9]{1,2}){0,1}", "Libility must be a decimal up to two places precision"));
-		
-		chase.setWidth(COMMON_FIELD_WIDTH);
-		chase.setMin(0);
-		chase.setMax(2);
+		this.aspect.setNullSelectionAllowed(false);
+		this.aspect.setImmediate(true);
+		this.aspect.setWidth(COMMON_FIELD_WIDTH);
+		this.aspect.setRequired(true);
+
+		this.splits.setRows(8);
+		this.splits.setNullSelectionAllowed(false);
+		this.splits.setWidth(DOUBLE_FIELD_WIDTH);
+		this.splits.setMultiSelect(true);
+		this.splits.setRequired(true);
+
+		setupTextField(this.description);
+		this.description.addValidator(new StringLengthValidator("Decription must be 3-255 characters", 3, 255, false));
+		this.description.setWidth(DOUBLE_FIELD_WIDTH);
+
+		setupTextField(this.liability);
+		this.liability.addValidator(new RegexpValidator("[1-9][0-9]*(\\.[0-9]{1,2}){0,1}", "Libility must be a decimal up to two places precision"));
+
+		this.chase.setWidth(COMMON_FIELD_WIDTH);
+		this.chase.setMin(0);
+		this.chase.setMax(2);
 		try {
-			chase.setValue(0);
+			this.chase.setValue(0);
 		} catch (ValueOutOfBoundsException e) {
 			//Do nothing
 		}
-		
-		setupTextField(minOdds);
-		minOdds.addValidator(new RegexpValidator("[1-9][0-9]*(\\.[0-9]{1,2}){0,1}", "Min Odds must be a decimal up to two places precision"));
-		 
-		setupTextField(maxOdds);
-		maxOdds.addValidator(new RegexpValidator("[1-9][0-9]*(\\.[0-9]{1,2}){0,1}", "Max Odds must be a decimal up to two places precision"));
+
+		setupTextField(this.minOdds);
+		this.minOdds.addValidator(new RegexpValidator("[1-9][0-9]*(\\.[0-9]{1,2}){0,1}", "Min Odds must be a decimal up to two places precision"));
+
+		setupTextField(this.maxOdds);
+		this.maxOdds.addValidator(new RegexpValidator("[1-9][0-9]*(\\.[0-9]{1,2}){0,1}", "Max Odds must be a decimal up to two places precision"));
 	}
-	
+
 	private boolean validateForm(){
-		return aspect.isValid() && splits.isValid() && description.isValid() && liability.isValid() && minOdds.isValid() && maxOdds.isValid();
+		return this.aspect.isValid() && this.splits.isValid() && this.description.isValid() && this.liability.isValid() && this.minOdds.isValid() && this.maxOdds.isValid();
 	}
-	
-    private void setupTextField(TextField field) {
-    	field.setRequired(true);
-    	field.setImmediate(true);
-    	field.setWidth(COMMON_FIELD_WIDTH);
-    	field.setNullRepresentation("");
-    }
+
+	private void setupTextField(TextField field) {
+		field.setRequired(true);
+		field.setImmediate(true);
+		field.setWidth(COMMON_FIELD_WIDTH);
+		field.setNullRepresentation("");
+	}
 
 	private Container createContainerFromStrategies(){
 		Container container = new IndexedContainer();
-		
+
 		List<String> headers = Lists.newArrayList(COLUMNS);
 		for(String header : headers){
 			container.addContainerProperty(header, String.class, "");
 		}
 		container.addContainerProperty("Strategy", Strategy.class, null);
-		
-		for(Strategy strategy : strategies){
+
+		for(Strategy strategy : this.strategies){
 			addStrategyToContainer(container, strategy);
 		}
-		
+
 		return container;
 	}
 

@@ -29,12 +29,13 @@ public class HibernateStrategyDao extends HibernateBaseDao implements StrategyDa
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Strategy> findAllStrategies() {
-		return hibernateTemplate.findByNamedQuery("ALL_STRATEGIES");
+		return this.hibernateTemplate.findByNamedQuery("ALL_STRATEGIES");
 	}
 
 	@Override
 	public void deleteStrategy(Strategy strategy) {
-		super.delete(strategy);
+		strategy.markDeleted();
+		super.saveOrUpdate(strategy);
 	}
-	
+
 }

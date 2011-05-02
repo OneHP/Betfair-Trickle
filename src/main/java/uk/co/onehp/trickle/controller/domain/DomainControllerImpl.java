@@ -67,8 +67,8 @@ public class DomainControllerImpl implements DomainController {
 	}
 
 	@Override
-	public void deleteStrategy(Strategy strategy) {
-		this.domainService.deleteStrategy(strategy);
+	public boolean deleteStrategy(Strategy strategy) {
+		return this.domainService.deleteStrategy(strategy);
 	}
 
 	@Override
