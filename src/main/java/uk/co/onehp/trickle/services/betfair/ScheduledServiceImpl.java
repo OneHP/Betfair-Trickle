@@ -47,19 +47,19 @@ public class ScheduledServiceImpl implements ScheduledService {
 	}
 
 	@Override
-	@Scheduled(cron="0 0 1 * * *")
+	@Scheduled(cron="0 0 5 * * *")
 	public void login(){
 		this.betfairService.login();
 	}
 
 	@Override
-	@Scheduled(cron="0 1 1 * * *")
+	@Scheduled(cron="0 1 5 * * *")
 	public void getUkMarket() {
 		this.betfairService.getUkMarket();
 	}
 
 	@Override
-	@Scheduled(cron="0 2 1 * * *")
+	@Scheduled(cron="0 2 5 * * *")
 	public void getAllMeetings() {
 		for(Meeting meeting : this.domainService.getAllMeetings()){
 			if(meeting.getRaces() == null || meeting.getRaces().size() == 0){
@@ -69,7 +69,7 @@ public class ScheduledServiceImpl implements ScheduledService {
 	}
 
 	@Override
-	@Scheduled(cron="0 5 1 * * *")
+	@Scheduled(cron="0 5 5 * * *")
 	public void getAllRaces() {
 		LocalDateTime now = new LocalDateTime();
 		for(Race race : this.domainService.getAllRaces()){
@@ -80,7 +80,7 @@ public class ScheduledServiceImpl implements ScheduledService {
 	}
 
 	@Override
-	@Scheduled(cron="0 0 2 * * *")
+	@Scheduled(cron="0 0 6 * * *")
 	public void getAllRacePrices() {
 		LocalDateTime now = new LocalDateTime();
 		for(Race race : this.domainService.getAllRaces()){
@@ -91,7 +91,7 @@ public class ScheduledServiceImpl implements ScheduledService {
 	}
 
 	@Override
-	@Scheduled(cron="0 0 4 * * *")
+	@Scheduled(cron="0 0 8 * * *")
 	public void removeProblemMeetings(){
 		this.domainService.removeProblemMeetings();
 	}
