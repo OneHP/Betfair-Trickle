@@ -52,7 +52,7 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 				return o1.getHorse().getRace().getStartTime().minusSeconds(mostSeconds1).compareTo(o2.getHorse().getRace().getStartTime().minusSeconds(mostSeconds2));
 			}
 		});
-		return bets.get(0);
+		return bets.size() > 0 ? bets.get(0) : null;
 	}
 
 	@Override

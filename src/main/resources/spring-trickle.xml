@@ -68,4 +68,42 @@
 			<value>true</value>
 		</property>
 	</bean>
+	
+	<bean id="placeBetsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	  <property name="jobClass" value="uk.co.onehp.trickle.services.betfair.PlaceBetsJob"/>
+	</bean>
+	
+	<bean id="placeBetsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	  <property name="jobDetail" ref="placeBetsJob"/>
+	  <property name="cronExpression" value="* * * * * ? 2222"/>
+	</bean>
+	
+	<bean id="startupJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	  <property name="jobClass" value="uk.co.onehp.trickle.services.betfair.StartupJob"/>
+	</bean>
+	
+	<bean id="startupTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+	  <property name="jobDetail" ref="startupJob"/>
+	  <property name="repeatCount" value="0"></property>
+	</bean>
+	
+	<bean id="getPricesForUpcomingBetsJob" class="org.springframework.scheduling.quartz.JobDetailBean">
+	  <property name="jobClass" value="uk.co.onehp.trickle.services.betfair.GetPricesForUpcomingBetsJob"/>
+	</bean>
+	
+	<bean id="getPricesForUpcomingBetsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	  <property name="jobDetail" ref="getPricesForUpcomingBetsJob"/>
+	  <property name="cronExpression" value="* * * * * ? 2222"/>
+	</bean>
+	
+	<bean name="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	    <property name="triggers">
+	        <list>
+	        	<ref bean="placeBetsTrigger"/>
+	        	<ref bean="getPricesForUpcomingBetsTrigger"/>
+	        	<ref bean="startupTrigger"/>
+	        </list>
+	    </property>
+	</bean>
+	
 </beans>

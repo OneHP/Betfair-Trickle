@@ -12,16 +12,20 @@
  */
 package uk.co.onehp.trickle.services.betfair;
 
-import java.util.List;
+import java.text.ParseException;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.joda.time.LocalDateTime;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.quartz.CronTriggerBean;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.onehp.trickle.domain.Bet;
 import uk.co.onehp.trickle.domain.Meeting;
 import uk.co.onehp.trickle.domain.Race;
 import uk.co.onehp.trickle.services.domain.DomainService;
@@ -29,13 +33,23 @@ import uk.co.onehp.trickle.services.domain.DomainService;
 @Service("scheduledService")
 public class ScheduledServiceImpl implements ScheduledService {
 
-	private String nextBetSchedule;
-
 	@Autowired
 	BetfairService betfairService;
 
 	@Autowired
 	DomainService domainService;
+
+	@Autowired
+	SchedulerFactoryBean quartzScheduler;
+
+	@Autowired
+	CronTriggerBean placeBetsTrigger;
+
+	@Autowired
+	CronTriggerBean getPricesForUpcomingBetsTrigger;
+
+	@Value("${upcomingBetsSeconds}")
+	private int upcomingBetsSeconds;
 
 	Logger log = Logger.getLogger(ScheduledServiceImpl.class);
 
@@ -97,37 +111,48 @@ public class ScheduledServiceImpl implements ScheduledService {
 	}
 
 	@Override
-	public void refreshNextBetSchedule() {
+	public void scheduleNextBet() {
+		Scheduler scheduler = this.quartzScheduler.getObject();
+		try {
+			this.placeBetsTrigger.setCronExpression(nextBetSchedule());
+			Date date = scheduler.rescheduleJob(this.placeBetsTrigger.getName(),this.placeBetsTrigger.getGroup(),this.placeBetsTrigger);
+			this.log.debug(date.toString());
+		} catch (SchedulerException e) {
+			this.log.error(e);
+		} catch (ParseException e) {
+			this.log.error(e);
+		}
+		try {
+			this.getPricesForUpcomingBetsTrigger.setCronExpression(nextBetPriceSchedule());
+			Date date = scheduler.rescheduleJob(this.getPricesForUpcomingBetsTrigger.getName(),this.getPricesForUpcomingBetsTrigger.getGroup(),this.getPricesForUpcomingBetsTrigger);
+			this.log.debug(date.toString());
+		} catch (SchedulerException e) {
+			this.log.error(e);
+		} catch (ParseException e) {
+			this.log.error(e);
+		}
+	}
+
+	private String nextBetSchedule() {
 		LocalDateTime nextBetTime = this.domainService.getNextBetTime();
-		this.nextBetSchedule = String.format("%s %s %s %s %s %s", nextBetTime.getSecondOfMinute(), nextBetTime.getMinuteOfHour()
-				, nextBetTime.getHourOfDay(), nextBetTime.getDayOfMonth(), nextBetTime.getMonthOfYear(), nextBetTime.getYear());
-		this.log.debug(this.nextBetSchedule);
+		if(null == nextBetTime){
+			nextBetTime = new LocalDateTime().plusMinutes(1);
+		}
+		String cron = String.format("%s %s %s %s %s ?", nextBetTime.getSecondOfMinute(), nextBetTime.getMinuteOfHour()
+				, nextBetTime.getHourOfDay(), nextBetTime.getDayOfMonth(), nextBetTime.getMonthOfYear());
+		return cron;
 	}
 
-	@Override
-	@Scheduled(cron="* * 10-22 * * * ")
-	@Transactional
-	public void placeBets() {
-		List<Bet> bets = this.domainService.getBetsToPlace();
-		final LocalDateTime now = new LocalDateTime();
-		for(Bet bet : bets){
-			for(Integer secondsBeforeOff : bet.getUnprocessedTimings()){
-				if(now.isAfter(bet.getHorse().getRace().getStartTime().minusSeconds(secondsBeforeOff))){
-					bet.markTimingProcessed(secondsBeforeOff);
-					this.domainService.updateBet(bet);
-					this.betfairService.placeBet(bet);
-				}
-			}
+	private String nextBetPriceSchedule() {
+		LocalDateTime nextBetTime = this.domainService.getNextBetTime();
+		if(null == nextBetTime){
+			nextBetTime = new LocalDateTime().plusMinutes(1);
+		}else{
+			nextBetTime = nextBetTime.minusSeconds(this.upcomingBetsSeconds);
 		}
-	}
-
-	@Override
-	@Scheduled(cron="*/5 * 10-22 * * * ")
-	public void getPricesForUpcomingBets() {
-		List<Bet> bets = this.domainService.getUpcomingBetsToPlace();
-		for(Bet bet : bets){
-			this.betfairService.getRacePrices(bet.getHorse().getRaceId());
-		}
+		String cron = String.format("%s %s %s %s %s ?", nextBetTime.getSecondOfMinute(), nextBetTime.getMinuteOfHour()
+				, nextBetTime.getHourOfDay(), nextBetTime.getDayOfMonth(), nextBetTime.getMonthOfYear());
+		return cron;
 	}
 
 }

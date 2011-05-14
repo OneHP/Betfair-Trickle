@@ -27,12 +27,16 @@ import uk.co.onehp.trickle.domain.Bet;
 import uk.co.onehp.trickle.domain.Meeting;
 import uk.co.onehp.trickle.domain.Race;
 import uk.co.onehp.trickle.domain.Strategy;
+import uk.co.onehp.trickle.services.betfair.ScheduledService;
 import uk.co.onehp.trickle.util.DateUtil;
 
 import com.google.common.collect.Lists;
 
 @Service("domainService")
 public class DomainServiceImpl implements DomainService {
+
+	@Autowired
+	private ScheduledService scheduledService;
 
 	@Autowired
 	private MeetingDao meetingDao;
@@ -62,7 +66,7 @@ public class DomainServiceImpl implements DomainService {
 	@Transactional
 	public LocalDateTime getNextBetTime() {
 		final Bet nextBet = this.betDao.getNextBet();
-		return nextBet.getHorse().getRace().getStartTime().minusSeconds(DateUtil.getMostSeconds(nextBet.getStrategy().getBetSecondsBeforeStartTime()));
+		return null == nextBet ? null: nextBet.getHorse().getRace().getStartTime().minusSeconds(DateUtil.getMostSeconds(nextBet.getStrategy().getBetSecondsBeforeStartTime()));
 	}
 
 	@Override
@@ -75,6 +79,7 @@ public class DomainServiceImpl implements DomainService {
 	@Transactional
 	public void updateBet(Bet bet) {
 		this.betDao.saveOrUpdate(bet);
+		this.scheduledService.scheduleNextBet();
 	}
 
 	@Override
@@ -116,12 +121,14 @@ public class DomainServiceImpl implements DomainService {
 	@Transactional
 	public void deleteBet(Bet bet) {
 		this.betDao.deleteBet(bet);
+		this.scheduledService.scheduleNextBet();
 	}
 
 	@Override
 	@Transactional
 	public void deleteIncompleteBets() {
 		this.betDao.deleteIncompleteBets();
+		this.scheduledService.scheduleNextBet();
 	}
 
 	@Override

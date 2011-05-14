@@ -20,7 +20,5 @@ public interface ScheduledService {
 	void getAllRaces();
 	void getAllRacePrices();
 	void removeProblemMeetings();
-	void refreshNextBetSchedule();
-	void placeBets();
-	void getPricesForUpcomingBets();
+	void scheduleNextBet();
 }
