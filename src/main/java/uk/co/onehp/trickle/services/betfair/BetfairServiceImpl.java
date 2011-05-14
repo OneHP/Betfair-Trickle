@@ -65,23 +65,23 @@ public class BetfairServiceImpl implements BetfairService {
 
 	@Autowired
 	private CamelContext camelContext;
-	
+
 	@Autowired
 	private ProducerTemplate producerTemplate;
-	
+
 	@Autowired
 	private SessionService sessionService;
-	
+
 	@Autowired
 	private DomainService domainService;
 
 	@Override
 	@Transactional
 	public void login() {
-		if (((BrowsableEndpoint)camelContext.getEndpoint("jms:login")).getExchanges().size() == 0) {
+		if (((BrowsableEndpoint)this.camelContext.getEndpoint("jms:login")).getExchanges().size() == 0) {
 			LoginReq loginReq = new LoginReq();
-			loginReq.setUsername(username);
-			loginReq.setPassword(password);
+			loginReq.setUsername(this.username);
+			loginReq.setPassword(this.password);
 			sendRequest(loginReq);
 		}
 	}
@@ -105,7 +105,7 @@ public class BetfairServiceImpl implements BetfairService {
 	@Transactional
 	public void getUkMarket() {
 		GetEventsReq getEventsReq = new GetEventsReq();
-		getEventsReq.setEventParentId(ukMarketId);
+		getEventsReq.setEventParentId(this.ukMarketId);
 		sendRequest(getEventsReq);
 	}
 
@@ -124,20 +124,20 @@ public class BetfairServiceImpl implements BetfairService {
 		getMarketPricesReq.setMarketId(raceId);
 		sendRequest(getMarketPricesReq);
 	}
-	
+
 	@Override
 	@Transactional
 	public void placeBet(Bet bet) {
 		PlaceBetsReq placeBetsReq = new PlaceBetsReq();
 		placeBetsReq.setBets(new ArrayOfPlaceBets());
 		//if price falls within range
-			//if chasing
-				//place entire amount at chased price, market on close
-			//else
-				//place as much as possible at highest price, market on close
-				//place remainder at SP limit on close
+		//if chasing
+		//place entire amount at chased price, market on close
 		//else
-			//place at SP limit on close
+		//place as much as possible at highest price, market on close
+		//place remainder at SP limit on close
+		//else
+		//place at SP limit on close
 		Strategy strategy = bet.getStrategy();
 		BigDecimal liability = strategy.getLiability().divide(new BigDecimal(bet.getNumberOfSplits()), BigDecimal.ROUND_HALF_UP);
 		Pricing bestPricing = BettingUtil.bestPrice(bet.getHorse().getPrices(), strategy.getAspect());
@@ -157,11 +157,11 @@ public class BetfairServiceImpl implements BetfairService {
 		}
 		sendRequest(placeBetsReq);
 	}
-	
+
 	private PlaceBets createLimitedSPBet(Bet bet, BigDecimal liability){
 		BigDecimal price = (bet.getStrategy().getAspect() == BettingAspect.BACK ? bet.getStrategy().getMinOdds() : bet.getStrategy().getMaxOdds());
 		bet.addLog(new BetLog(new LocalDateTime(), liability, price, BetType.LIMITED_SP));
-		domainService.updateBet(bet);
+		this.domainService.updateBet(bet);
 		PlaceBets placeBets = new PlaceBets();
 		placeBets.setBetType(bet.getStrategy().getAspect() == BettingAspect.BACK ? BetTypeEnum.B : BetTypeEnum.L);
 		placeBets.setBetCategoryType(BetCategoryTypeEnum.L);
@@ -173,10 +173,10 @@ public class BetfairServiceImpl implements BetfairService {
 		placeBets.setPrice(price.doubleValue());
 		return placeBets;
 	}
-	
+
 	private PlaceBets createMOCExchangeBet(Bet bet, BigDecimal liability, BigDecimal price){
 		bet.addLog(new BetLog(new LocalDateTime(), liability, price, BetType.MOC_EXCHANGE));
-		domainService.updateBet(bet);
+		this.domainService.updateBet(bet);
 		PlaceBets placeBets = new PlaceBets();
 		placeBets.setBetType(bet.getStrategy().getAspect() == BettingAspect.BACK ? BetTypeEnum.B : BetTypeEnum.L);
 		placeBets.setBetCategoryType(BetCategoryTypeEnum.E);
@@ -192,14 +192,14 @@ public class BetfairServiceImpl implements BetfairService {
 
 	private void sendRequest(Object body) {
 		if (body.getClass() != LoginReq.class) {
-			if (sessionService.getGlobalSessionTokenUpdateDateTime()
-					.plusSeconds(sessionTimeout).isBefore(new LocalDateTime())) {
+			if (this.sessionService.getGlobalSessionTokenUpdateDateTime()
+					.plusSeconds(this.sessionTimeout).isBefore(new LocalDateTime())) {
 				login();
 			}
 		}
 		final Map<String, Object> headers = Maps.newHashMap();
 		headers.put("requestType", body.getClass().toString());
-		producerTemplate.sendBodyAndHeaders("jms:betfair",  
+		this.producerTemplate.sendBodyAndHeaders("jms:betfair",
 				new Gson().toJson(body), headers);
 	}
 }

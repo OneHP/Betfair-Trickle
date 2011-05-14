@@ -75,7 +75,7 @@
 	
 	<bean id="placeBetsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	  <property name="jobDetail" ref="placeBetsJob"/>
-	  <property name="cronExpression" value="* * * * * ? 2222"/>
+	  <property name="cronExpression" value="0 0 0 1 1 ? 2222"/>
 	</bean>
 	
 	<bean id="startupJob" class="org.springframework.scheduling.quartz.JobDetailBean">
@@ -93,7 +93,7 @@
 	
 	<bean id="getPricesForUpcomingBetsTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 	  <property name="jobDetail" ref="getPricesForUpcomingBetsJob"/>
-	  <property name="cronExpression" value="* * * * * ? 2222"/>
+	  <property name="cronExpression" value="0 0 0 1 1 ? 2222"/>
 	</bean>
 	
 	<bean name="quartzScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

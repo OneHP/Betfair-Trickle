@@ -14,6 +14,7 @@ package uk.co.onehp.trickle.services.domain;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.joda.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +50,8 @@ public class DomainServiceImpl implements DomainService {
 
 	@Autowired
 	private StrategyDao strategyDao;
+
+	Logger log = Logger.getLogger(DomainServiceImpl.class);
 
 	@Override
 	@Transactional

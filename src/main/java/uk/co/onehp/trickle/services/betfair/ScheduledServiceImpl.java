@@ -13,7 +13,6 @@
 package uk.co.onehp.trickle.services.betfair;
 
 import java.text.ParseException;
-import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.joda.time.LocalDateTime;
@@ -111,24 +110,22 @@ public class ScheduledServiceImpl implements ScheduledService {
 	}
 
 	@Override
-	public void scheduleNextBet() {
+	public void scheduleNextBet(){
 		Scheduler scheduler = this.quartzScheduler.getObject();
 		try {
 			this.placeBetsTrigger.setCronExpression(nextBetSchedule());
-			Date date = scheduler.rescheduleJob(this.placeBetsTrigger.getName(),this.placeBetsTrigger.getGroup(),this.placeBetsTrigger);
-			this.log.debug(date.toString());
-		} catch (SchedulerException e) {
-			this.log.error(e);
+			scheduler.rescheduleJob(this.placeBetsTrigger.getName(),this.placeBetsTrigger.getGroup(),this.placeBetsTrigger);
 		} catch (ParseException e) {
+			this.log.error(e);
+		} catch (SchedulerException e) {
 			this.log.error(e);
 		}
 		try {
 			this.getPricesForUpcomingBetsTrigger.setCronExpression(nextBetPriceSchedule());
-			Date date = scheduler.rescheduleJob(this.getPricesForUpcomingBetsTrigger.getName(),this.getPricesForUpcomingBetsTrigger.getGroup(),this.getPricesForUpcomingBetsTrigger);
-			this.log.debug(date.toString());
-		} catch (SchedulerException e) {
-			this.log.error(e);
+			scheduler.rescheduleJob(this.getPricesForUpcomingBetsTrigger.getName(),this.getPricesForUpcomingBetsTrigger.getGroup(),this.getPricesForUpcomingBetsTrigger);
 		} catch (ParseException e) {
+			this.log.error(e);
+		} catch (SchedulerException e) {
 			this.log.error(e);
 		}
 	}

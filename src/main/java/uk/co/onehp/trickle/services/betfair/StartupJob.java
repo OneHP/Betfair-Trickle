@@ -20,5 +20,4 @@ public class StartupJob extends QuartzJobBean {
 	throws JobExecutionException {
 		this.scheduledService.scheduleNextBet();
 	}
-
 }

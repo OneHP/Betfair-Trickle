@@ -12,6 +12,7 @@
  */
 package uk.co.onehp.trickle.services.betfair;
 
+
 public interface ScheduledService {
 	void login();
 	void archiveMeetings();
