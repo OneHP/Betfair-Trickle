@@ -13,6 +13,7 @@
 package uk.co.onehp.trickle.services.betfair;
 
 import java.text.ParseException;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 import org.joda.time.LocalDateTime;
@@ -114,7 +115,8 @@ public class ScheduledServiceImpl implements ScheduledService {
 		Scheduler scheduler = this.quartzScheduler.getObject();
 		try {
 			this.placeBetsTrigger.setCronExpression(nextBetSchedule());
-			scheduler.rescheduleJob(this.placeBetsTrigger.getName(),this.placeBetsTrigger.getGroup(),this.placeBetsTrigger);
+			Date rescheduleTime = scheduler.rescheduleJob(this.placeBetsTrigger.getName(),this.placeBetsTrigger.getGroup(),this.placeBetsTrigger);
+			this.log.debug(rescheduleTime);
 		} catch (ParseException e) {
 			this.log.error(e);
 		} catch (SchedulerException e) {
@@ -122,7 +124,8 @@ public class ScheduledServiceImpl implements ScheduledService {
 		}
 		try {
 			this.getPricesForUpcomingBetsTrigger.setCronExpression(nextBetPriceSchedule());
-			scheduler.rescheduleJob(this.getPricesForUpcomingBetsTrigger.getName(),this.getPricesForUpcomingBetsTrigger.getGroup(),this.getPricesForUpcomingBetsTrigger);
+			Date rescheduleTime = scheduler.rescheduleJob(this.getPricesForUpcomingBetsTrigger.getName(),this.getPricesForUpcomingBetsTrigger.getGroup(),this.getPricesForUpcomingBetsTrigger);
+			this.log.debug(rescheduleTime);
 		} catch (ParseException e) {
 			this.log.error(e);
 		} catch (SchedulerException e) {

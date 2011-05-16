@@ -69,7 +69,7 @@ public class DomainServiceImpl implements DomainService {
 	@Transactional
 	public LocalDateTime getNextBetTime() {
 		final Bet nextBet = this.betDao.getNextBet();
-		return null == nextBet ? null: nextBet.getHorse().getRace().getStartTime().minusSeconds(DateUtil.getMostSeconds(nextBet.getStrategy().getBetSecondsBeforeStartTime()));
+		return null == nextBet ? null: nextBet.getHorse().getRace().getStartTime().minusSeconds(DateUtil.getMostSeconds(nextBet.getUnprocessedTimings()));
 	}
 
 	@Override
