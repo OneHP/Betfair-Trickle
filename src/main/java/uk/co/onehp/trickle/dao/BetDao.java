@@ -26,4 +26,5 @@ public interface BetDao {
 	List<Bet> getCompleteBets();
 	void deleteBet(Bet bet);
 	void deleteIncompleteBets();
+	void wipeBets();
 }

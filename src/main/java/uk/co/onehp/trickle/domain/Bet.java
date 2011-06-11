@@ -34,7 +34,8 @@ import com.google.common.collect.Lists;
 @Entity
 @NamedQueries({
 	@NamedQuery(name="INCOMPLETE_BETS", query="FROM Bet WHERE complete = 'false'"),
-	@NamedQuery(name="COMPLETE_BETS", query="FROM Bet WHERE complete = 1")
+	@NamedQuery(name="COMPLETE_BETS", query="FROM Bet WHERE complete = 1"),
+	@NamedQuery(name="ALL_BETS", query="FROM Bet")
 })
 public class Bet extends BaseDomainObject{
 
@@ -49,43 +50,43 @@ public class Bet extends BaseDomainObject{
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private Strategy strategy;
 	@OneToMany(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.ALL)
 	@IndexColumn(name="TIMINGS")
 	private List<BetTiming> timings;
 	@Type(type="boolean")
 	private boolean complete;
 	@OneToMany(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.ALL)
 	@IndexColumn(name="LOGS")
 	private List<BetLog> betLogs;
-	
+
 	public Bet(){
-		
+
 	}
-	
+
 	public Bet(Horse horse, Strategy strategy){
 		this.horse = horse;
 		this.strategy = strategy;
 		setTimings(secondsToTimings(strategy.getBetSecondsBeforeStartTime()));
-		complete = false;
+		this.complete = false;
 	}
-	
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public int getId() {
-		return id;
+		return this.id;
 	}
-	
+
 	public Horse getHorse() {
-		return horse;
+		return this.horse;
 	}
 	public void setHorse(Horse horse) {
 		this.horse = horse;
 	}
 	public Strategy getStrategy() {
-		return strategy;
+		return this.strategy;
 	}
 	public void setStrategy(Strategy strategy) {
 		this.strategy = strategy;
@@ -94,7 +95,7 @@ public class Bet extends BaseDomainObject{
 		this.timings = timings;
 	}
 	public List<BetTiming> getTimings() {
-		return timings;
+		return this.timings;
 	}
 
 	private List<BetTiming> secondsToTimings(List<Integer> seconds){
@@ -104,48 +105,48 @@ public class Bet extends BaseDomainObject{
 		}
 		return timings;
 	}
-	
+
 	public List<Integer> getUnprocessedTimings(){
 		final List<Integer> seconds = Lists.newArrayList();
-		for(BetTiming timing : timings){
+		for(BetTiming timing : this.timings){
 			if(timing != null && !timing.isProcessed()){
 				seconds.add(timing.getSecondsBeforeOff());
 			}
 		}
 		return seconds;
 	}
-	
+
 	public int getNumberOfSplits(){
 		final List<Integer> seconds = Lists.newArrayList();
-		for(BetTiming timing : timings){
+		for(BetTiming timing : this.timings){
 			if(timing != null){
 				seconds.add(timing.getSecondsBeforeOff());
 			}
 		}
 		return seconds.size();
 	}
-	
+
 	public void markTimingProcessed(int seconds){
-		for(BetTiming timing : timings){
+		for(BetTiming timing : this.timings){
 			if(timing != null && timing.getSecondsBeforeOff() == seconds){
 				timing.markAsProcessed();
 				if(getUnprocessedTimings().size() == 0){
-					complete = true;
+					this.complete = true;
 				}
 				return;
 			}
 		}
 	}
-	
+
 	public void addLog(BetLog betLog){
-		if(null == betLogs){
-			betLogs = Lists.newArrayList(betLog);
+		if(null == this.betLogs){
+			this.betLogs = Lists.newArrayList(betLog);
 		}else{
-			betLogs.add(betLog);
+			this.betLogs.add(betLog);
 		}
 	}
-	
+
 	public List<BetLog> getBetLogs(){
-		return betLogs;
+		return this.betLogs;
 	}
 }

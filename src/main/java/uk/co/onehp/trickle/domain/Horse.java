@@ -34,7 +34,7 @@ public class Horse extends BaseDomainObject {
 	private final HorsePk key = new HorsePk();
 	private String name;
 	@OneToMany(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.ALL)
 	@IndexColumn(name="PRICES")
 	private List<Pricing> prices;
 	@ManyToOne
@@ -47,7 +47,7 @@ public class Horse extends BaseDomainObject {
 	 * @return the runnerId
 	 */
 	public int getRunnerId() {
-		return key.runnerId;
+		return this.key.runnerId;
 	}
 
 	/**
@@ -55,14 +55,14 @@ public class Horse extends BaseDomainObject {
 	 *            the runnerId to set
 	 */
 	public void setRunnerId(final int runnerId) {
-		key.runnerId = runnerId;
+		this.key.runnerId = runnerId;
 	}
-	
+
 	/**
 	 * @return the runnerId
 	 */
 	public int getRaceId() {
-		return key.raceId;
+		return this.key.raceId;
 	}
 
 	/**
@@ -70,14 +70,14 @@ public class Horse extends BaseDomainObject {
 	 *            the runnerId to set
 	 */
 	public void setRaceId(final int raceId) {
-		key.raceId = raceId;
+		this.key.raceId = raceId;
 	}
 
 	/**
 	 * @return the name
 	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	/**
@@ -92,7 +92,7 @@ public class Horse extends BaseDomainObject {
 	 * @return the prices
 	 */
 	public List<Pricing> getPrices() {
-		return prices;
+		return this.prices;
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class Horse extends BaseDomainObject {
 	}
 
 	public Race getRace() {
-		return race;
+		return this.race;
 	}
 }
 

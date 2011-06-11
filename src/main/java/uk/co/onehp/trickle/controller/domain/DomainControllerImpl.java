@@ -89,4 +89,19 @@ public class DomainControllerImpl implements DomainController {
 		return filteredBets;
 	}
 
+	@Override
+	public void wipeDatabase() {
+		this.domainService.wipeDatabase();
+	}
+
+	@Override
+	public void rebuildDatabase() {
+		this.domainService.rebuildDatabase();
+	}
+
+	@Override
+	public void updatePrices() {
+		this.domainService.updatePrices();
+	}
+
 }

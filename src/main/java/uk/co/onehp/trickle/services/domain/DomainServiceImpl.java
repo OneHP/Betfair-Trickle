@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import uk.co.onehp.trickle.dao.BetDao;
+import uk.co.onehp.trickle.dao.MarketDao;
 import uk.co.onehp.trickle.dao.MeetingDao;
 import uk.co.onehp.trickle.dao.RaceDao;
 import uk.co.onehp.trickle.dao.StrategyDao;
@@ -47,6 +48,9 @@ public class DomainServiceImpl implements DomainService {
 
 	@Autowired
 	private BetDao betDao;
+
+	@Autowired
+	private MarketDao marketDao;
 
 	@Autowired
 	private StrategyDao strategyDao;
@@ -187,6 +191,26 @@ public class DomainServiceImpl implements DomainService {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	@Transactional
+	public void wipeDatabase() {
+		this.betDao.wipeBets();
+		this.marketDao.wipeMarkets();
+	}
+
+	@Override
+	@Transactional
+	public void rebuildDatabase() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	@Transactional
+	public void updatePrices() {
+		this.scheduledService.getAllRacePrices();
 	}
 
 }

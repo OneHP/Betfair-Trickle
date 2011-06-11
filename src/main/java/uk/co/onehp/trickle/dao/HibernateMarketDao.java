@@ -12,11 +12,14 @@
  */
 package uk.co.onehp.trickle.dao;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import uk.co.onehp.trickle.domain.Market;
 
 @Repository("marketDao")
+@SuppressWarnings("unchecked")
 public class HibernateMarketDao extends HibernateBaseDao implements MarketDao{
 
 	@Override
@@ -27,5 +30,14 @@ public class HibernateMarketDao extends HibernateBaseDao implements MarketDao{
 	@Override
 	public void saveOrUpdate(Market market) {
 		super.saveOrUpdate(market);
+	}
+
+	@Override
+	public void wipeMarkets() {
+		this.hibernateTemplate.deleteAll(allMarkets());
+	}
+
+	private List<Market> allMarkets(){
+		return this.hibernateTemplate.findByNamedQuery("ALL_MARKETS");
 	}
 }

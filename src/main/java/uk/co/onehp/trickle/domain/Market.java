@@ -23,16 +23,21 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 
 import com.google.common.collect.Lists;
 
 @Entity
+@NamedQueries({
+	@NamedQuery(name="ALL_MARKETS", query="FROM Market")
+})
 public class Market extends BaseDomainObject {
 	@Id
 	private final int id;
 	private final String name;
 	@OneToMany(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.ALL)
 	@IndexColumn(name="MEETINGS")
 	@Filter(name="incompleteMeetings", condition="complete = 'false'")
 	private List<Meeting> meetings;

@@ -58,7 +58,7 @@ public class BetView extends CustomComponent {
 	private DomainController domainController;
 
 	private HorizontalLayout mainLayout;
-	private final List<Meeting> meetings;
+	private List<Meeting> meetings;
 	private List<Strategy> strategies;
 	private List<Bet> incompleteBets;
 	private List<Bet> completeBets;
@@ -186,6 +186,11 @@ public class BetView extends CustomComponent {
 		this.mainLayout.addComponent(this.formSection);
 		this.mainLayout.addComponent(this.completeBetsSection);
 
+	}
+
+	public void populateMeetingsTree(){
+		this.meetings = this.domainController.getAllMeetings();
+		this.meetingsTree.setContainerDataSource(createTreeContainerFromMeetings());
 	}
 
 	public void populateIncompleteBetsTable(){

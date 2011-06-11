@@ -35,7 +35,6 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 	private int upcomingBetsSeconds;
 
 	@Override
-	//	@CacheEvict(value = {"completeBets","incompleteBets"}, allEntries = true)
 	public void saveOrUpdate(Bet bet) {
 		super.saveOrUpdate(bet);
 	}
@@ -87,13 +86,11 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 	}
 
 	@Override
-	//	@CacheEvict(value = {"completeBets","incompleteBets"}, allEntries = true)
 	public void deleteBet(Bet bet) {
 		super.delete(bet);
 	}
 
 	@Override
-	//	@CacheEvict(value = {"completeBets","incompleteBets"}, allEntries = true)
 	public void deleteIncompleteBets() {
 		this.hibernateTemplate.deleteAll(this.hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS"));
 	}
@@ -103,13 +100,21 @@ public class HibernateBetDao extends HibernateBaseDao implements BetDao {
 		return completeBets();
 	}
 
-	//	@Cacheable("completeBets")
+	@Override
+	public void wipeBets() {
+		this.hibernateTemplate.deleteAll(allBets());
+	}
+
+	private List<Bet> allBets(){
+		return this.hibernateTemplate.findByNamedQuery("ALL_BETS");
+	}
+
 	private List<Bet> completeBets(){
 		return this.hibernateTemplate.findByNamedQuery("COMPLETE_BETS");
 	}
 
-	//	@Cacheable(value = "incompleteBets")
 	private List<Bet> incompleteBets(){
 		return this.hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS");
 	}
+
 }

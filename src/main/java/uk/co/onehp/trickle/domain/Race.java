@@ -36,7 +36,7 @@ public class Race extends BaseDomainObject {
 	private final String name;
 	private final LocalDateTime startTime;
 	@OneToMany(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.ALL)
 	@IndexColumn(name="RUNNERS")
 	private List<Horse> runners;
 	private String meetingName;

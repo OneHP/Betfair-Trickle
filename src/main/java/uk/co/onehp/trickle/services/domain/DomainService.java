@@ -38,4 +38,7 @@ public interface DomainService {
 	void archiveMeetings();
 	void removeProblemMeetings();
 	boolean strategyInUse(Strategy strategy);
+	void wipeDatabase();
+	void rebuildDatabase();
+	void updatePrices();
 }

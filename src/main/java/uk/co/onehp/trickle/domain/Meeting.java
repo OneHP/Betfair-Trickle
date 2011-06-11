@@ -34,7 +34,7 @@ public class Meeting extends BaseDomainObject {
 	private final int eventId;
 	private final String name;
 	@OneToMany(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Cascade(CascadeType.ALL)
 	@IndexColumn(name="RACES")
 	private List<Race> races;
 	private boolean complete;

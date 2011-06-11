@@ -28,4 +28,7 @@ public interface DomainController {
 	boolean deleteStrategy(Strategy strategy);
 	void deleteBet(Bet bet);
 	void deleteIncompleteBets();
+	void wipeDatabase();
+	void rebuildDatabase();
+	void updatePrices();
 }
