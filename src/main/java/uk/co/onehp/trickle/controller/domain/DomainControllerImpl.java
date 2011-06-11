@@ -45,15 +45,7 @@ public class DomainControllerImpl implements DomainController {
 
 	@Override
 	public List<Meeting> getAllMeetings() {
-		return Lists.newArrayList(Iterables.filter(this.domainService.getAllMeetings(), new Predicate<Meeting>() {
-			@Override
-			public boolean apply(Meeting meeting) {
-				if(meeting.getRaces().size() < 1){
-					return false;
-				}
-				return meeting.getRaces().get(0).getStartTime().isAfter(new LocalDateTime().withHourOfDay(0).withMinuteOfHour(0).withSecondOfMinute(0));
-			}
-		}));
+		return this.domainService.getAllMeetings();
 	}
 
 	@Override

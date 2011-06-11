@@ -16,7 +16,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:task="http://www.springframework.org/schema/task"
-	xmlns:cache="http://www.springframework.org/schema/cache" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
@@ -24,7 +24,6 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-3.1.xsd
         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 		
@@ -32,7 +31,6 @@
 	<context:component-scan base-package="uk.co.onehp.trickle" />
 	<context:spring-configured />
 	<task:annotation-driven/>
-	<cache:annotation-driven/>
 	<import resource="classpath:/spring-hibernate.xml" />
 	
 	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
@@ -42,16 +40,6 @@
 		<camel:template id="producerTemplate"/>
 		<camel:routeBuilder ref="betfairEngineRouting"/>
 	</camel:camelContext>
-	
-	<bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">
-	  <property name="caches">
-	    <set>
-	      <bean class="org.springframework.cache.concurrent.ConcurrentCacheFactoryBean" p:name="default"/>
-	      <bean class="org.springframework.cache.concurrent.ConcurrentCacheFactoryBean" p:name="completeBets"/>
-	      <bean class="org.springframework.cache.concurrent.ConcurrentCacheFactoryBean" p:name="incompleteBets"/>
-	    </set>
-	  </property>
-	</bean>
 	
 	<bean id="jms" class="org.apache.activemq.camel.component.ActiveMQComponent">
     	<property name="brokerURL" value="vm://localhost?broker.persistent=false"/>

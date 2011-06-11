@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.IndexColumn;
 
 import com.google.common.collect.Lists;
@@ -33,35 +34,36 @@ public class Market extends BaseDomainObject {
 	@OneToMany(fetch=FetchType.EAGER)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@IndexColumn(name="MEETINGS")
+	@Filter(name="incompleteMeetings", condition="complete = 'false'")
 	private List<Meeting> meetings;
 
 	public Market(){
-		id = 0;
-		name = "";
+		this.id = 0;
+		this.name = "";
 	}
-	
+
 	public Market(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
 	public long getId() {
-		return id;
+		return this.id;
 	}
 
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	public List<Meeting> getMeetings() {
-		return meetings;
+		return this.meetings;
 	}
-	
+
 	public void addMeeting(Meeting meeting){
-		if(null == meetings){
-			meetings = Lists.newArrayList();
+		if(null == this.meetings){
+			this.meetings = Lists.newArrayList();
 		}
-		meetings.add(meeting);
+		this.meetings.add(meeting);
 	}
 
 }
