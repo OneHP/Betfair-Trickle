@@ -203,8 +203,19 @@ public class DomainServiceImpl implements DomainService {
 	@Override
 	@Transactional
 	public void rebuildDatabase() {
-		// TODO Auto-generated method stub
-
+		try {
+			this.scheduledService.login();
+			Thread.sleep(5*1000);
+			this.scheduledService.getUkMarket();
+			Thread.sleep(60*1000);
+			this.scheduledService.getAllMeetings();
+			Thread.sleep(5*60*1000);
+			this.scheduledService.getAllRaces();
+			Thread.sleep(25*60*1000);
+			this.scheduledService.getAllRacePrices();
+		} catch (InterruptedException e) {
+			this.log.error(e);
+		}
 	}
 
 	@Override
