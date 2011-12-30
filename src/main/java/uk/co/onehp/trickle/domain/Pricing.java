@@ -14,39 +14,27 @@ package uk.co.onehp.trickle.domain;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
-import org.hibernate.annotations.GenericGenerator;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Serialized;
 
 @Entity
-public class Pricing extends BaseDomainObject {
+public class Pricing extends MongoDomainObject {
 
-	@Id
-	@GenericGenerator(name = "generator", strategy = "increment")
-	@GeneratedValue(generator = "generator")
-	private int id;
+	@Serialized
 	private BigDecimal price;
+	@Serialized
 	private BigDecimal amountAvailable;
+	@Serialized
 	private BettingAspect bettingAspect;
-	
+
 	public Pricing(){
-		
+
 	}
-	
+
 	public Pricing(BigDecimal price, BigDecimal amountAvailable, BettingAspect bettingAspect){
 		this.price = price;
 		this.amountAvailable = amountAvailable;
 		this.bettingAspect = bettingAspect;
-	}
-	
-	public void setId(int id) {
-		this.id = id;
-	}
-	
-	public int getId() {
-		return id;
 	}
 
 	public void setPrice(BigDecimal price) {
@@ -54,7 +42,7 @@ public class Pricing extends BaseDomainObject {
 	}
 
 	public BigDecimal getPrice() {
-		return price;
+		return this.price;
 	}
 
 	public void setAmountAvailable(BigDecimal amountAvailable) {
@@ -62,7 +50,7 @@ public class Pricing extends BaseDomainObject {
 	}
 
 	public BigDecimal getAmountAvailable() {
-		return amountAvailable;
+		return this.amountAvailable;
 	}
 
 	public void setBettingAspect(BettingAspect bettingAspect) {
@@ -70,6 +58,6 @@ public class Pricing extends BaseDomainObject {
 	}
 
 	public BettingAspect getBettingAspect() {
-		return bettingAspect;
+		return this.bettingAspect;
 	}
 }

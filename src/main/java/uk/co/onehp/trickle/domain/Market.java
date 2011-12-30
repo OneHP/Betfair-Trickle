@@ -14,46 +14,30 @@ package uk.co.onehp.trickle.domain;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.IndexColumn;
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
-
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Reference;
 import com.google.common.collect.Lists;
 
 @Entity
-@NamedQueries({
-	@NamedQuery(name="ALL_MARKETS", query="FROM Market")
-})
-public class Market extends BaseDomainObject {
-	@Id
-	private final int id;
+public class Market extends MongoDomainObject {
+
+	private final int marketId;
 	private final String name;
-	@OneToMany(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.ALL)
-	@IndexColumn(name="MEETINGS")
-	@Filter(name="incompleteMeetings", condition="complete = 'false'")
+	@Reference
 	private List<Meeting> meetings;
 
 	public Market(){
-		this.id = 0;
+		this.marketId = 0;
 		this.name = "";
 	}
 
-	public Market(int id, String name) {
-		this.id = id;
+	public Market(int marketId, String name) {
+		this.marketId = marketId;
 		this.name = name;
 	}
 
-	public long getId() {
-		return this.id;
+	public int getMarketId() {
+		return this.marketId;
 	}
 
 	public String getName() {

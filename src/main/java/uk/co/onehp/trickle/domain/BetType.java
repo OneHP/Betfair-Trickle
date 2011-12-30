@@ -12,19 +12,22 @@
  */
 package uk.co.onehp.trickle.domain;
 
+import com.google.code.morphia.annotations.Embedded;
+
+@Embedded
 public enum BetType {
 
 	LIMITED_SP("limitedSp"),
-	
+
 	MOC_EXCHANGE("mocExchange");
-	
+
 	private String type;
-	
+
 	BetType(String type){
 		this.type = type;
 	}
 
 	public String getType() {
-		return type;
+		return this.type;
 	}
 }

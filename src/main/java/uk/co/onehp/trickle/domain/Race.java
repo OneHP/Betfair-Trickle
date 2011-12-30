@@ -14,30 +14,21 @@ package uk.co.onehp.trickle.domain;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
-import org.hibernate.annotations.NamedQuery;
 import org.joda.time.LocalDateTime;
 
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Reference;
+import com.google.code.morphia.annotations.Serialized;
 import com.google.common.collect.Lists;
 
 @Entity
-@NamedQuery(name="ALL_RACES", query="FROM Race WHERE complete = 'false'")
 public class Race extends BaseDomainObject {
 
-	@Id
-	private final int eventId;
+	private int eventId;
 	private final String name;
+	@Serialized
 	private final LocalDateTime startTime;
-	@OneToMany(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.ALL)
-	@IndexColumn(name="RUNNERS")
+	@Reference
 	private List<Horse> runners;
 	private String meetingName;
 	private boolean complete;
@@ -47,7 +38,7 @@ public class Race extends BaseDomainObject {
 		this.name = "";
 		this.startTime = new LocalDateTime(0);
 		this.meetingName = "";
-		this.complete = false;
+		this.setComplete(false);
 	}
 
 	public Race(int eventId, String name, LocalDateTime startTime, String meetingName) {
@@ -55,11 +46,11 @@ public class Race extends BaseDomainObject {
 		this.name = name;
 		this.startTime = startTime;
 		this.meetingName = meetingName;
-		this.complete = false;
+		this.setComplete(false);
 	}
 
 	public void markAsComplete(){
-		this.complete = true;
+		this.setComplete(true);
 	}
 
 	public int getEventId() {
@@ -91,5 +82,17 @@ public class Race extends BaseDomainObject {
 
 	public String getMeetingName() {
 		return this.meetingName;
+	}
+
+	public void setEventId(int raceId) {
+		this.eventId = raceId;
+	}
+
+	public void setComplete(boolean complete) {
+		this.complete = complete;
+	}
+
+	public boolean isComplete() {
+		return complete;
 	}
 }

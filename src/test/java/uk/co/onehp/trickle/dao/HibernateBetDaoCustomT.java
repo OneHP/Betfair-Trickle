@@ -42,8 +42,6 @@ public class HibernateBetDaoCustomT {
 
 		final Horse horse = new Horse();
 		horse.setRunnerId(441);
-		horse.setRaceId(867);
-
 		horse.setRace(race);
 		race.addHorse(horse);
 

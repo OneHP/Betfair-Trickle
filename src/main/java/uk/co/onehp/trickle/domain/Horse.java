@@ -14,108 +14,48 @@ package uk.co.onehp.trickle.domain;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Reference;
 
 @Entity
-public class Horse extends BaseDomainObject {
+public class Horse extends MongoDomainObject {
 
-	@Id
-	private final HorsePk key = new HorsePk();
+	private int runnerId;
 	private String name;
-	@OneToMany(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.ALL)
-	@IndexColumn(name="PRICES")
+	@Reference
 	private List<Pricing> prices;
-	@ManyToOne
+	@Reference
 	private Race race;
 
 	public Horse() {
 	}
 
-	/**
-	 * @return the runnerId
-	 */
 	public int getRunnerId() {
-		return this.key.runnerId;
+		return this.runnerId;
 	}
 
-	/**
-	 * @param runnerId
-	 *            the runnerId to set
-	 */
 	public void setRunnerId(final int runnerId) {
-		this.key.runnerId = runnerId;
+		this.runnerId = runnerId;
 	}
 
-	/**
-	 * @return the runnerId
-	 */
 	public int getRaceId() {
-		return this.key.raceId;
+		return this.race.getEventId();
 	}
 
-	/**
-	 * @param runnerId
-	 *            the runnerId to set
-	 */
-	public void setRaceId(final int raceId) {
-		this.key.raceId = raceId;
-	}
-
-	/**
-	 * @return the name
-	 */
 	public String getName() {
 		return this.name;
 	}
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
 	public void setName(final String name) {
 		this.name = name;
 	}
 
-	/**
-	 * @return the prices
-	 */
 	public List<Pricing> getPrices() {
 		return this.prices;
 	}
 
-	/**
-	 * @param prices
-	 *            the prices to set
-	 */
 	public void setPrices(final List<Pricing> prices) {
 		this.prices = prices;
-	}
-
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this).toString();
-	}
-
-	@Override
-	public int hashCode() {
-		return HashCodeBuilder.reflectionHashCode(this);
-	}
-
-	@Override
-	public boolean equals(final Object obj) {
-		return EqualsBuilder.reflectionEquals(this, obj);
 	}
 
 	public void setRace(Race race) {

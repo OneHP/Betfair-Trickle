@@ -14,45 +14,33 @@ package uk.co.onehp.trickle.domain;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
-import org.hibernate.annotations.NamedQuery;
-
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Reference;
 import com.google.common.collect.Lists;
 
 @Entity
-@NamedQuery(name="ALL_MEETINGS", query="FROM Meeting WHERE complete = 'false'")
-public class Meeting extends BaseDomainObject {
+public class Meeting extends MongoDomainObject {
 
-	@Id
 	private final int eventId;
 	private final String name;
-	@OneToMany(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.ALL)
-	@IndexColumn(name="RACES")
+	@Reference
 	private List<Race> races;
 	private boolean complete;
 
 	public Meeting(){
 		this.eventId = 0;
 		this.name = "";
-		this.complete = false;
+		this.setComplete(false);
 	}
 
 	public Meeting(int eventId, String name){
 		this.eventId = eventId;
 		this.name = name;
-		this.complete = false;
+		this.setComplete(false);
 	}
 
 	public void markAsComplete(){
-		this.complete = true;
+		this.setComplete(true);
 	}
 
 	public int getEventId() {
@@ -66,6 +54,14 @@ public class Meeting extends BaseDomainObject {
 
 	public List<Race> getRaces() {
 		return this.races;
+	}
+
+	public void setComplete(boolean complete) {
+		this.complete = complete;
+	}
+
+	public boolean isComplete() {
+		return this.complete;
 	}
 
 	public void addRace(Race race){

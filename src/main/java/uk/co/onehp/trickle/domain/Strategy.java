@@ -15,18 +15,13 @@ package uk.co.onehp.trickle.domain;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.bson.types.ObjectId;
-
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Serialized;
 
 @Entity
-public class Strategy extends BaseDomainObject {
+public class Strategy extends MongoDomainObject {
 
-	@Id
-	private ObjectId id;
 	private String description;
 	@Serialized
 	private BigDecimal liability;
@@ -43,14 +38,6 @@ public class Strategy extends BaseDomainObject {
 
 	public void markDeleted(){
 		this.setDeleted(true);
-	}
-
-	public void setId(ObjectId id) {
-		this.id = id;
-	}
-
-	public ObjectId getId() {
-		return this.id;
 	}
 
 	public BigDecimal getLiability() {

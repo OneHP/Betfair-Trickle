@@ -13,9 +13,9 @@
 package uk.co.onehp.trickle.repository;
 
 import uk.co.onehp.trickle.domain.Horse;
-import uk.co.onehp.trickle.domain.HorsePk;
+import uk.co.onehp.trickle.domain.Race;
 
 public interface HorseRepository {
 	void saveOrUpdate(Horse horse);
-	Horse getHorse(final HorsePk id);
+	Horse getHorse(Race race, int horseId);
 }

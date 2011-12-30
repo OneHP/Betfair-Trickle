@@ -1,15 +1,3 @@
-/*
- * Betfair Trickle. Automatic bet placement application. Copyright (C) 2011
- * Thomas Inman. This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or (at your
- * option) any later version. This program is distributed in the hope that it
- * will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
- * Public License for more details. You should have received a copy of the GNU
- * General Public License along with this program; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
- */
 package uk.co.onehp.trickle.repository;
 
 import java.util.Collections;
@@ -27,16 +15,15 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-@Repository("betDao")
-@SuppressWarnings("unchecked")
-public class HibernateBetDao extends HibernateBaseDao implements BetRepository {
+@Repository("betRepository")
+public class MongoBetRepository extends AbstractMongoRepository implements BetRepository {
 
 	@Value("${upcomingBetsSeconds}")
 	private int upcomingBetsSeconds;
 
 	@Override
 	public void saveOrUpdate(Bet bet) {
-		super.saveOrUpdate(bet);
+		this.datastore.save(bet);
 	}
 
 	@Override
@@ -74,7 +61,7 @@ public class HibernateBetDao extends HibernateBaseDao implements BetRepository {
 		filteredBets = Lists.newArrayList(Iterables.filter(bets, new Predicate<Bet>() {
 			@Override
 			public boolean apply(Bet bet) {
-				return new LocalDateTime().isAfter(bet.getHorse().getRace().getStartTime().minusSeconds(DateUtil.getMostSeconds(bet.getUnprocessedTimings()) + HibernateBetDao.this.upcomingBetsSeconds));
+				return new LocalDateTime().isAfter(bet.getHorse().getRace().getStartTime().minusSeconds(DateUtil.getMostSeconds(bet.getUnprocessedTimings()) + MongoBetRepository.this.upcomingBetsSeconds));
 			}
 		}));
 		return filteredBets;
@@ -86,35 +73,35 @@ public class HibernateBetDao extends HibernateBaseDao implements BetRepository {
 	}
 
 	@Override
-	public void deleteBet(Bet bet) {
-		super.delete(bet);
-	}
-
-	@Override
-	public void deleteIncompleteBets() {
-		this.hibernateTemplate.deleteAll(this.hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS"));
-	}
-
-	@Override
 	public List<Bet> getCompleteBets() {
 		return completeBets();
 	}
 
 	@Override
+	public void deleteBet(Bet bet) {
+		this.datastore.delete(bet);
+	}
+
+	@Override
+	public void deleteIncompleteBets() {
+		this.datastore.delete(incompleteBets());
+	}
+
+	@Override
 	public void wipeBets() {
-		this.hibernateTemplate.deleteAll(allBets());
+		this.datastore.delete(allBets());
 	}
 
 	private List<Bet> allBets(){
-		return this.hibernateTemplate.findByNamedQuery("ALL_BETS");
+		return this.datastore.find(Bet.class).asList();
 	}
 
 	private List<Bet> completeBets(){
-		return this.hibernateTemplate.findByNamedQuery("COMPLETE_BETS");
+		return this.datastore.find(Bet.class).field("complete").equal(true).asList();
 	}
 
 	private List<Bet> incompleteBets(){
-		return this.hibernateTemplate.findByNamedQuery("INCOMPLETE_BETS");
+		return this.datastore.find(Bet.class).field("complete").equal(false).asList();
 	}
 
 }

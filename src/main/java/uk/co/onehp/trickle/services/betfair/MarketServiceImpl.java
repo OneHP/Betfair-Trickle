@@ -36,45 +36,44 @@ public class MarketServiceImpl implements MarketService {
 
 	@Autowired
 	SessionService sessionService;
-	
+
 	@Autowired
 	RaceRepository raceDao;
-	
+
 	private final Logger log = Logger.getLogger(MarketServiceImpl.class);
-	
+
 	@Override
 	@Transactional
 	public void getMarket(String req) {
-		log.debug("GET MARKET: " + req);
+		this.log.debug("GET MARKET: " + req);
 		final BFExchangeService_Service service = new BFExchangeService_Service();
 		final BFExchangeService port = service
-				.getBFExchangeService();
-		
+		.getBFExchangeService();
+
 		final GetMarketReq request = new Gson().fromJson(req, GetMarketReq.class);
-		
+
 		final APIRequestHeader header = new APIRequestHeader();
-		header.setSessionToken(sessionService.getExchangeSessionToken());
+		header.setSessionToken(this.sessionService.getExchangeSessionToken());
 		request.setHeader(header);
-		
+
 		final GetMarketResp result = port
-				.getMarket(request);
-		
+		.getMarket(request);
+
 		if(result.getErrorCode() == GetMarketErrorEnum.OK){
-			sessionService.updateGlobalSession(result.getHeader().getSessionToken());
-			sessionService.updateExchangeSession(result.getHeader().getSessionToken());
-			
-			final Race race = raceDao.getRace(result.getMarket().getMarketId());
+			this.sessionService.updateGlobalSession(result.getHeader().getSessionToken());
+			this.sessionService.updateExchangeSession(result.getHeader().getSessionToken());
+
+			final Race race = this.raceDao.getRace(result.getMarket().getMarketId());
 			for(Runner runner : result.getMarket().getRunners().getRunner()){
 				final Horse horse = new Horse();
-				horse.setRaceId(race.getEventId());
 				horse.setRunnerId(runner.getSelectionId());
 				horse.setName(runner.getName());
 				horse.setRace(race);
 				race.addHorse(horse);
 			}
-			raceDao.saveOrUpdate(race);
+			this.raceDao.saveOrUpdate(race);
 		}
-		log.debug("GET MARKET: " + result.getErrorCode().toString());
+		this.log.debug("GET MARKET: " + result.getErrorCode().toString());
 	}
 
 }

@@ -31,16 +31,16 @@ import uk.co.onehp.trickle.repository.MarketRepository;
 import com.google.common.collect.Lists;
 
 
-public class HibernateMarketDaoCustomT {
+public class MongoMarketDaoCustomT {
 
 	@Ignore
 	public static void main(final String[] args) {
 		final ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 		"classpath:/spring-trickle.xml");
-		final MarketRepository marketDao = (MarketRepository) applicationContext
-		.getBean("marketDao");
-		final HorseRepository horseDao = (HorseRepository) applicationContext
-		.getBean("horseDao");
+		final MarketRepository marketRepository = (MarketRepository) applicationContext
+		.getBean("marketRepository");
+		final HorseRepository horseRepository = (HorseRepository) applicationContext
+		.getBean("horseRepository");
 
 		final Market market = new Market(7483, "Market");
 		final Meeting meeting = new Meeting(234, "Meeting");
@@ -49,7 +49,6 @@ public class HibernateMarketDaoCustomT {
 		final Pricing pricing = new Pricing(new BigDecimal("3.45"), new BigDecimal("3090.96"), BettingAspect.BACK);
 
 		horse.setRunnerId(441);
-		horse.setRaceId(867);
 		horse.setRace(race);
 		horse.setPrices(Lists.newArrayList(pricing));
 
@@ -59,8 +58,8 @@ public class HibernateMarketDaoCustomT {
 
 		market.addMeeting(meeting);
 
-		marketDao.saveOrUpdate(market);
-		System.out.println(marketDao.getMarket(7483));
+		marketRepository.saveOrUpdate(market);
+		System.out.println(marketRepository.getMarket(7483));
 	}
 
 }

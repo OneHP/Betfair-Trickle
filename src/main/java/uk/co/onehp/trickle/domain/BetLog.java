@@ -19,32 +19,31 @@ package uk.co.onehp.trickle.domain;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
-import org.hibernate.annotations.GenericGenerator;
 import org.joda.time.LocalDateTime;
+
+import com.google.code.morphia.annotations.Embedded;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Serialized;
 
 @Entity
 public class BetLog extends BaseDomainObject {
 
-	@Id
-	@GenericGenerator(name = "generator", strategy = "increment")
-	@GeneratedValue(generator = "generator")
-	private int id;
+	@Serialized
 	private final LocalDateTime placedDateTime;
+	@Serialized
 	private final BigDecimal liability;
+	@Serialized
 	private final BigDecimal price;
+	@Embedded
 	private final BetType betType;
-	
+
 	public BetLog(){
-		placedDateTime = null;
-		liability = null;
-		price = null;
-		betType = null;
+		this.placedDateTime = null;
+		this.liability = null;
+		this.price = null;
+		this.betType = null;
 	}
-	
+
 	public BetLog(LocalDateTime placedDateTime, BigDecimal liability, BigDecimal price, BetType betType){
 		this.placedDateTime = placedDateTime;
 		this.liability = liability;
@@ -52,27 +51,19 @@ public class BetLog extends BaseDomainObject {
 		this.betType = betType;
 	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public int getId() {
-		return id;
-	}
-
 	public LocalDateTime getPlacedDateTime() {
-		return placedDateTime;
+		return this.placedDateTime;
 	}
 
 	public BigDecimal getLiability() {
-		return liability;
+		return this.liability;
 	}
 
 	public BigDecimal getPrice() {
-		return price;
+		return this.price;
 	}
 
 	public BetType getBetType() {
-		return betType;
+		return this.betType;
 	}
 }

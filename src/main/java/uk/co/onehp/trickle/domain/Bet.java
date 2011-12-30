@@ -14,50 +14,21 @@ package uk.co.onehp.trickle.domain;
 
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.IndexColumn;
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
-import org.hibernate.annotations.Type;
-
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Reference;
 import com.google.common.collect.Lists;
 
 @Entity
-@NamedQueries({
-	@NamedQuery(name="INCOMPLETE_BETS", query="FROM Bet WHERE complete = 'false'"),
-	@NamedQuery(name="COMPLETE_BETS", query="FROM Bet WHERE complete = 1"),
-	@NamedQuery(name="ALL_BETS", query="FROM Bet")
-})
 public class Bet extends BaseDomainObject{
 
-	@Id
-	@GenericGenerator(name = "generator", strategy = "increment")
-	@GeneratedValue(generator = "generator")
-	private int id;
-	@OneToOne(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Reference
 	private Horse horse;
-	@Transient
+	@Reference
 	private Strategy strategy;
-	@OneToMany(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.ALL)
-	@IndexColumn(name="TIMINGS")
+	@Reference
 	private List<BetTiming> timings;
-	@Type(type="boolean")
 	private boolean complete;
-	@OneToMany(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.ALL)
-	@IndexColumn(name="LOGS")
+	@Reference
 	private List<BetLog> betLogs;
 
 	public Bet(){
@@ -68,15 +39,7 @@ public class Bet extends BaseDomainObject{
 		this.horse = horse;
 		this.strategy = strategy;
 		setTimings(secondsToTimings(strategy.getBetSecondsBeforeStartTime()));
-		this.complete = false;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public int getId() {
-		return this.id;
+		this.setComplete(false);
 	}
 
 	public Horse getHorse() {
@@ -131,7 +94,7 @@ public class Bet extends BaseDomainObject{
 			if(timing != null && timing.getSecondsBeforeOff() == seconds){
 				timing.markAsProcessed();
 				if(getUnprocessedTimings().size() == 0){
-					this.complete = true;
+					this.setComplete(true);
 				}
 				return;
 			}
@@ -148,5 +111,13 @@ public class Bet extends BaseDomainObject{
 
 	public List<BetLog> getBetLogs(){
 		return this.betLogs;
+	}
+
+	public void setComplete(boolean complete) {
+		this.complete = complete;
+	}
+
+	public boolean isComplete() {
+		return complete;
 	}
 }

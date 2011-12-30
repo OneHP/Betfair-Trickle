@@ -12,44 +12,31 @@
  */
 package uk.co.onehp.trickle.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import com.google.code.morphia.annotations.Entity;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 @Entity
-public class BetTiming extends BaseDomainObject {
+public class BetTiming extends MongoDomainObject {
 
-	
-	@Id
-	@GenericGenerator(name = "generator", strategy = "increment")
-	@GeneratedValue(generator = "generator")
-	private int id;
 	private int secondsBeforeOff;
-	@Type(type="boolean")
 	private boolean processed;
-	
+
 	public BetTiming(){
-		
+
 	}
-	
+
 	public BetTiming(int secondsBeforeOff){
 		this.secondsBeforeOff = secondsBeforeOff;
-		processed = false;
+		this.processed = false;
 	}
-	
-	public int getId() {
-		return id;
-	}
+
 	public int getSecondsBeforeOff() {
-		return secondsBeforeOff;
+		return this.secondsBeforeOff;
 	}
 	public boolean isProcessed() {
-		return processed;
+		return this.processed;
 	}
 	public void markAsProcessed(){
-		processed = true;
+		this.processed = true;
 	}
 }

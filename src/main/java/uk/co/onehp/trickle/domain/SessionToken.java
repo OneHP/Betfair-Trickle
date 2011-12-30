@@ -12,17 +12,14 @@
  */
 package uk.co.onehp.trickle.domain;
 
-import org.bson.types.ObjectId;
 import org.joda.time.LocalDateTime;
 
 import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Serialized;
 @Entity
-public class SessionToken extends BaseDomainObject {
-	@Id
-	private ObjectId id;
+public class SessionToken extends MongoDomainObject {
+
 	private String token;
 	@Serialized
 	private LocalDateTime updatedDateTime;
@@ -32,13 +29,6 @@ public class SessionToken extends BaseDomainObject {
 	public void updateToken(String token){
 		this.token = token;
 		this.updatedDateTime = new LocalDateTime();
-	}
-
-	public ObjectId getId() {
-		return this.id;
-	}
-	public void setId(ObjectId id) {
-		this.id = id;
 	}
 
 	public void setToken(String token) {
