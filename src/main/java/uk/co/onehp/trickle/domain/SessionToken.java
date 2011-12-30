@@ -12,49 +12,41 @@
  */
 package uk.co.onehp.trickle.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
+import org.bson.types.ObjectId;
 import org.joda.time.LocalDateTime;
-@NamedQueries({
-	@NamedQuery(
-	name = "getSessionToken",
-	query = "from SessionToken st where st.sessionType = :sessionType"
-	)
-})
+
+import com.google.code.morphia.annotations.Embedded;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Serialized;
 @Entity
 public class SessionToken extends BaseDomainObject {
 	@Id
-	@GenericGenerator(name = "generator", strategy = "increment")
-	@GeneratedValue(generator = "generator")
-	private int id;
+	private ObjectId id;
 	private String token;
+	@Serialized
 	private LocalDateTime updatedDateTime;
+	@Embedded
 	private SessionType sessionType;
-	
+
 	public void updateToken(String token){
 		this.token = token;
-		updatedDateTime = new LocalDateTime();
+		this.updatedDateTime = new LocalDateTime();
 	}
-	
-	public void setId(int id) {
+
+	public ObjectId getId() {
+		return this.id;
+	}
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
-	
-	public int getId() {
-		return id;
-	}
-	
+
 	public void setToken(String token) {
 		this.token = token;
 	}
-	
+
 	public String getToken() {
-		return token;
+		return this.token;
 	}
 
 	public void setUpdatedDateTime(LocalDateTime updatedDateTime) {
@@ -62,7 +54,7 @@ public class SessionToken extends BaseDomainObject {
 	}
 
 	public LocalDateTime getUpdatedDateTime() {
-		return updatedDateTime;
+		return this.updatedDateTime;
 	}
 
 	public void setSessionType(SessionType sessionType) {
@@ -70,6 +62,6 @@ public class SessionToken extends BaseDomainObject {
 	}
 
 	public SessionType getSessionType() {
-		return sessionType;
+		return this.sessionType;
 	}
 }

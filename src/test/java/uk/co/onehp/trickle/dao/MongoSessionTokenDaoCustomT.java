@@ -22,31 +22,31 @@ import uk.co.onehp.trickle.domain.SessionType;
 import uk.co.onehp.trickle.repository.SessionTokenRepository;
 
 
-public class HibernateSessionTokenDaoCustomT {
+public class MongoSessionTokenDaoCustomT {
 
 	@Ignore
 	public static void main(final String[] args) {
 		final ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-				"classpath:/spring-trickle.xml");
-		final SessionTokenRepository dao = (SessionTokenRepository) applicationContext
-				.getBean("sessionTokenDao");
+		"classpath:/spring-trickle.xml");
+		final SessionTokenRepository repository = (SessionTokenRepository) applicationContext
+		.getBean("sessionTokenRepository");
 
 		final SessionToken token = new SessionToken();
 		token.setSessionType(SessionType.GLOBAL);
 		token.setToken("kjngshjgsdlhkjn");
 		token.setUpdatedDateTime(new LocalDateTime());
-		
-		dao.saveOrUpdate(token);
-		
-		final SessionToken result = dao.getSessionToken(SessionType.GLOBAL);
+
+		repository.saveOrUpdate(token);
+
+		final SessionToken result = repository.getSessionToken(SessionType.GLOBAL);
 		System.out.println(result);
-		
+
 		result.setToken("sdgnsdlgsgdsag");
 		result.setUpdatedDateTime(new LocalDateTime());
-		
-		dao.saveOrUpdate(result);
-		
-		final SessionToken result2 = dao.getSessionToken(SessionType.GLOBAL);
+
+		repository.saveOrUpdate(result);
+
+		final SessionToken result2 = repository.getSessionToken(SessionType.GLOBAL);
 		System.out.println(result2);
 	}
 

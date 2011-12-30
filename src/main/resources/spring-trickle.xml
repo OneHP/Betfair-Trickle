@@ -16,7 +16,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:camel="http://camel.apache.org/schema/spring" xmlns:task="http://www.springframework.org/schema/task"
-	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:mongo="http://www.springframework.org/schema/data/mongo"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
@@ -25,7 +25,8 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
         http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
-        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+        http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo-1.0.xsd">
 		
 	<context:annotation-config />
 	<context:component-scan base-package="uk.co.onehp.trickle" />
@@ -93,5 +94,16 @@
 	        </list>
 	    </property>
 	</bean>
+	
+	<mongo:mongo id="mongo" host="${mongo.host}" port="10038"/>
+ 
+	<bean id="mongoTemplate" class="org.springframework.data.document.mongodb.MongoTemplate" p:username="${mongo.user}" p:password="${mongo.password}">
+		<constructor-arg index="0"><ref bean="mongo"/></constructor-arg>
+		<constructor-arg index="1" ><value>${mongo.name}</value></constructor-arg>
+		<constructor-arg index="2" ><value>trickle</value></constructor-arg>
+		
+	</bean>
+	
+	<bean id="morphia" class="uk.co.onehp.trickle.repository.MorphiaBean" />
 	
 </beans>

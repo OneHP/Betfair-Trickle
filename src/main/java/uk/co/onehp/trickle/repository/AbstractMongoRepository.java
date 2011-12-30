@@ -20,6 +20,6 @@ public class AbstractMongoRepository {
 
 	@PostConstruct
 	public void init(){
-		this.datastore = this.morphia.createDatastore(this.mongo, "auction");
+		this.datastore = this.morphia.createDatastore(this.mongo, "trickle");
 	}
 }
