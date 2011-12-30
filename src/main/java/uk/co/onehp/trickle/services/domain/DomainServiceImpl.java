@@ -53,7 +53,7 @@ public class DomainServiceImpl implements DomainService {
 	private MarketRepository marketDao;
 
 	@Autowired
-	private StrategyRepository strategyDao;
+	private StrategyRepository strategyRepository;
 
 	Logger log = Logger.getLogger(DomainServiceImpl.class);
 
@@ -98,13 +98,13 @@ public class DomainServiceImpl implements DomainService {
 	@Override
 	@Transactional
 	public List<Strategy> getAllStrategies() {
-		return this.strategyDao.findAllStrategies();
+		return this.strategyRepository.findAllStrategies();
 	}
 
 	@Override
 	@Transactional
 	public void saveStrategy(Strategy strategy) {
-		this.strategyDao.saveOrUpdate(strategy);
+		this.strategyRepository.saveOrUpdate(strategy);
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class DomainServiceImpl implements DomainService {
 	@Transactional
 	public boolean deleteStrategy(Strategy strategy) {
 		if(!strategyInUse(strategy)){
-			this.strategyDao.deleteStrategy(strategy);
+			this.strategyRepository.deleteStrategy(strategy);
 			return true;
 		}
 		return false;
@@ -186,7 +186,7 @@ public class DomainServiceImpl implements DomainService {
 			}
 		}
 		for(Strategy strategyInUse : strategiesInUse){
-			if(strategyInUse.getId() == strategy.getId()){
+			if(strategyInUse.getId().equals(strategy.getId())){
 				return true;
 			}
 		}

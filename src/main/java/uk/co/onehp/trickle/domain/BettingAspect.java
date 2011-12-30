@@ -12,20 +12,23 @@
  */
 package uk.co.onehp.trickle.domain;
 
+import com.google.code.morphia.annotations.Embedded;
+
+@Embedded
 public enum BettingAspect {
-	
+
 	BACK("back"),
-	
+
 	LAY("lay");
-	
+
 	private String type;
-	
+
 	BettingAspect(String type){
 		this.type = type;
 	}
 
 	public String getType() {
-		return type;
+		return this.type;
 	}
 
 }

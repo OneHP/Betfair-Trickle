@@ -15,42 +15,41 @@ package uk.co.onehp.trickle.domain;
 import java.math.BigDecimal;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import org.bson.types.ObjectId;
 
-import org.hibernate.annotations.CollectionOfElements;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.NamedQuery;
+import com.google.code.morphia.annotations.Embedded;
+import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
+import com.google.code.morphia.annotations.Serialized;
 
 @Entity
-@NamedQuery(name="ALL_STRATEGIES", query="FROM Strategy WHERE deleted = 'false'")
 public class Strategy extends BaseDomainObject {
 
 	@Id
-	@GenericGenerator(name = "generator", strategy = "increment")
-	@GeneratedValue(generator = "generator")
-	private int id;
+	private ObjectId id;
 	private String description;
+	@Serialized
 	private BigDecimal liability;
+	@Serialized
 	private BigDecimal minOdds;
+	@Serialized
 	private BigDecimal maxOdds;
+	@Embedded
 	private BettingAspect aspect;
 	private int chasePriceByTick;
-	@CollectionOfElements(fetch=FetchType.EAGER)
+	@Serialized
 	private List<Integer> betSecondsBeforeStartTime;
 	private boolean deleted;
 
 	public void markDeleted(){
-		this.deleted = true;
+		this.setDeleted(true);
 	}
 
-	public void setId(int id) {
+	public void setId(ObjectId id) {
 		this.id = id;
 	}
 
-	public int getId() {
+	public ObjectId getId() {
 		return this.id;
 	}
 
@@ -108,5 +107,13 @@ public class Strategy extends BaseDomainObject {
 
 	public void setBetSecondsBeforeStartTime(List<Integer> betSecondsBeforeStartTime) {
 		this.betSecondsBeforeStartTime = betSecondsBeforeStartTime;
+	}
+
+	public void setDeleted(boolean deleted) {
+		this.deleted = deleted;
+	}
+
+	public boolean isDeleted() {
+		return this.deleted;
 	}
 }

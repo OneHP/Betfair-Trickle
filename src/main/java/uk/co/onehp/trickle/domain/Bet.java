@@ -20,6 +20,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -46,8 +47,7 @@ public class Bet extends BaseDomainObject{
 	@OneToOne(fetch=FetchType.EAGER)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private Horse horse;
-	@OneToOne(fetch=FetchType.EAGER)
-	@Cascade(CascadeType.SAVE_UPDATE)
+	@Transient
 	private Strategy strategy;
 	@OneToMany(fetch=FetchType.EAGER)
 	@Cascade(CascadeType.ALL)
