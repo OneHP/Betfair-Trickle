@@ -25,6 +25,8 @@ import uk.co.onehp.trickle.domain.Market;
 import uk.co.onehp.trickle.domain.Meeting;
 import uk.co.onehp.trickle.domain.Pricing;
 import uk.co.onehp.trickle.domain.Race;
+import uk.co.onehp.trickle.repository.HorseRepository;
+import uk.co.onehp.trickle.repository.MarketRepository;
 
 import com.google.common.collect.Lists;
 
@@ -35,9 +37,9 @@ public class HibernateMarketDaoCustomT {
 	public static void main(final String[] args) {
 		final ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 		"classpath:/spring-trickle.xml");
-		final MarketDao marketDao = (MarketDao) applicationContext
+		final MarketRepository marketDao = (MarketRepository) applicationContext
 		.getBean("marketDao");
-		final HorseDao horseDao = (HorseDao) applicationContext
+		final HorseRepository horseDao = (HorseRepository) applicationContext
 		.getBean("horseDao");
 
 		final Market market = new Market(7483, "Market");

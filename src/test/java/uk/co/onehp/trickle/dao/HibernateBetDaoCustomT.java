@@ -21,6 +21,8 @@ import uk.co.onehp.trickle.domain.Bet;
 import uk.co.onehp.trickle.domain.Horse;
 import uk.co.onehp.trickle.domain.Race;
 import uk.co.onehp.trickle.domain.Strategy;
+import uk.co.onehp.trickle.repository.BetRepository;
+import uk.co.onehp.trickle.repository.RaceRepository;
 
 import com.google.common.collect.Lists;
 
@@ -30,10 +32,10 @@ public class HibernateBetDaoCustomT {
 	public static void main(final String[] args) {
 		final ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 		"classpath:/spring-trickle.xml");
-		final BetDao betDao = (BetDao) applicationContext
+		final BetRepository betDao = (BetRepository) applicationContext
 		.getBean("betDao");
 
-		final RaceDao raceDao = (RaceDao) applicationContext
+		final RaceRepository raceDao = (RaceRepository) applicationContext
 		.getBean("raceDao");
 
 		final Race race = new Race(867, "Race", new LocalDateTime(2012,2,22,19,19,0), "meeting");

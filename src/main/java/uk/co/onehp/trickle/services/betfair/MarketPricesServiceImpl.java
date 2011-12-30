@@ -19,12 +19,12 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import uk.co.onehp.trickle.dao.HorseDao;
-import uk.co.onehp.trickle.dao.RaceDao;
 import uk.co.onehp.trickle.domain.BettingAspect;
 import uk.co.onehp.trickle.domain.Horse;
 import uk.co.onehp.trickle.domain.Pricing;
 import uk.co.onehp.trickle.domain.Race;
+import uk.co.onehp.trickle.repository.HorseRepository;
+import uk.co.onehp.trickle.repository.RaceRepository;
 import uk.co.onehp.trickle.services.session.SessionService;
 
 import com.betfair.publicapi.types.exchange.v5.APIRequestHeader;
@@ -45,10 +45,10 @@ public class MarketPricesServiceImpl implements MarketPricesService {
 	SessionService sessionService;
 	
 	@Autowired
-	RaceDao raceDao;
+	RaceRepository raceDao;
 	
 	@Autowired
-	HorseDao horseDao;
+	HorseRepository horseDao;
 	
 	private final Logger log = Logger.getLogger(MarketPricesServiceImpl.class);
 	

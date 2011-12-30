@@ -17,9 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.onehp.trickle.dao.RaceDao;
 import uk.co.onehp.trickle.domain.Horse;
 import uk.co.onehp.trickle.domain.Race;
+import uk.co.onehp.trickle.repository.RaceRepository;
 import uk.co.onehp.trickle.services.session.SessionService;
 
 import com.betfair.publicapi.types.exchange.v5.APIRequestHeader;
@@ -38,7 +38,7 @@ public class MarketServiceImpl implements MarketService {
 	SessionService sessionService;
 	
 	@Autowired
-	RaceDao raceDao;
+	RaceRepository raceDao;
 	
 	private final Logger log = Logger.getLogger(MarketServiceImpl.class);
 	

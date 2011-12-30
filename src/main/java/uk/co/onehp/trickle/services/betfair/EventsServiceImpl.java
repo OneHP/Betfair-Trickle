@@ -18,11 +18,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.onehp.trickle.dao.MarketDao;
-import uk.co.onehp.trickle.dao.MeetingDao;
 import uk.co.onehp.trickle.domain.Market;
 import uk.co.onehp.trickle.domain.Meeting;
 import uk.co.onehp.trickle.domain.Race;
+import uk.co.onehp.trickle.repository.MarketRepository;
+import uk.co.onehp.trickle.repository.MeetingRepository;
 import uk.co.onehp.trickle.services.session.SessionService;
 import uk.co.onehp.trickle.util.DateUtil;
 
@@ -43,10 +43,10 @@ public class EventsServiceImpl implements EventsService {
 	SessionService sessionService;
 
 	@Autowired
-	MarketDao marketDao;
+	MarketRepository marketDao;
 
 	@Autowired
-	MeetingDao meetingDao;
+	MeetingRepository meetingDao;
 
 	@Value("$ukMarketId")
 	private final String ukMarketId = "298251";

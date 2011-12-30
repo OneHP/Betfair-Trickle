@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.onehp.trickle.dao.SessionTokenDao;
+import uk.co.onehp.trickle.repository.SessionTokenRepository;
 import uk.co.onehp.trickle.domain.SessionToken;
 import uk.co.onehp.trickle.domain.SessionType;
 eful, but WITHOUT ANY WARRANTY; without even the implied warranty
@@ -20,15 +20,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.onehp.trickle.dao.SessionTokenDao;
 import uk.co.onehp.trickle.domain.SessionToken;
 import uk.co.onehp.trickle.domain.SessionType;
+import uk.co.onehp.trickle.repository.SessionTokenRepository;
 
 @Service("sessionService")
 public class SessionServiceImpl implements SessionService {
 
 	@Autowired
-	private SessionTokenDao sessionTokenDao;
+	private SessionTokenRepository sessionTokenDao;
 	
 	@Override
 	@Transactional

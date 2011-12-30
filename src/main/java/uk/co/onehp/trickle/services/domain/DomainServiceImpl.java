@@ -20,15 +20,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import uk.co.onehp.trickle.dao.BetDao;
-import uk.co.onehp.trickle.dao.MarketDao;
-import uk.co.onehp.trickle.dao.MeetingDao;
-import uk.co.onehp.trickle.dao.RaceDao;
-import uk.co.onehp.trickle.dao.StrategyDao;
 import uk.co.onehp.trickle.domain.Bet;
 import uk.co.onehp.trickle.domain.Meeting;
 import uk.co.onehp.trickle.domain.Race;
 import uk.co.onehp.trickle.domain.Strategy;
+import uk.co.onehp.trickle.repository.BetRepository;
+import uk.co.onehp.trickle.repository.MarketRepository;
+import uk.co.onehp.trickle.repository.MeetingRepository;
+import uk.co.onehp.trickle.repository.RaceRepository;
+import uk.co.onehp.trickle.repository.StrategyRepository;
 import uk.co.onehp.trickle.services.betfair.ScheduledService;
 import uk.co.onehp.trickle.util.DateUtil;
 
@@ -41,19 +41,19 @@ public class DomainServiceImpl implements DomainService {
 	private ScheduledService scheduledService;
 
 	@Autowired
-	private MeetingDao meetingDao;
+	private MeetingRepository meetingDao;
 
 	@Autowired
-	private RaceDao raceDao;
+	private RaceRepository raceDao;
 
 	@Autowired
-	private BetDao betDao;
+	private BetRepository betDao;
 
 	@Autowired
-	private MarketDao marketDao;
+	private MarketRepository marketDao;
 
 	@Autowired
-	private StrategyDao strategyDao;
+	private StrategyRepository strategyDao;
 
 	Logger log = Logger.getLogger(DomainServiceImpl.class);
 

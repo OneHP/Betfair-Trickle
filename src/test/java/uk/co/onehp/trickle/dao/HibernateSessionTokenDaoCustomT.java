@@ -19,6 +19,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import uk.co.onehp.trickle.domain.SessionToken;
 import uk.co.onehp.trickle.domain.SessionType;
+import uk.co.onehp.trickle.repository.SessionTokenRepository;
 
 
 public class HibernateSessionTokenDaoCustomT {
@@ -27,7 +28,7 @@ public class HibernateSessionTokenDaoCustomT {
 	public static void main(final String[] args) {
 		final ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 				"classpath:/spring-trickle.xml");
-		final SessionTokenDao dao = (SessionTokenDao) applicationContext
+		final SessionTokenRepository dao = (SessionTokenRepository) applicationContext
 				.getBean("sessionTokenDao");
 
 		final SessionToken token = new SessionToken();
