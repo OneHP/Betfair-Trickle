@@ -37,10 +37,9 @@ public class DateUtil {
 	}
 
 	public static String toShortString(LocalDateTime localDateTime){
-		LocalDateTime britishLocalDateTime = localDateTime.plusHours(1);
-		return String.format("%s %s %s:%s", britishLocalDateTime.toDateTime().monthOfYear().getAsShortText()
-				, britishLocalDateTime.toDateTime().dayOfMonth().getAsText(), britishLocalDateTime.getHourOfDay()
-				, britishLocalDateTime.getMinuteOfHour());
+		return String.format("%s %s %s:%s", localDateTime.toDateTime().monthOfYear().getAsShortText()
+				, localDateTime.toDateTime().dayOfMonth().getAsText(), localDateTime.getHourOfDay()
+				, localDateTime.getMinuteOfHour());
 	}
 
 }
