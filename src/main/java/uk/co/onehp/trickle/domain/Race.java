@@ -18,51 +18,20 @@ import org.joda.time.LocalDateTime;
 
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Reference;
-import com.google.code.morphia.annotations.Serialized;
 import com.google.common.collect.Lists;
 
 @Entity
-public class Race extends BaseDomainObject {
+public class Race extends BasicRace {
 
-	private int eventId;
-	private final String name;
-	@Serialized
-	private final LocalDateTime startTime;
 	@Reference
 	private List<Horse> runners;
-	private String meetingName;
-	private boolean complete;
 
 	public Race(){
-		this.eventId = 0;
-		this.name = "";
-		this.startTime = new LocalDateTime(0);
-		this.meetingName = "";
-		this.setComplete(false);
+		super();
 	}
 
 	public Race(int eventId, String name, LocalDateTime startTime, String meetingName) {
-		this.eventId = eventId;
-		this.name = name;
-		this.startTime = startTime;
-		this.meetingName = meetingName;
-		this.setComplete(false);
-	}
-
-	public void markAsComplete(){
-		this.setComplete(true);
-	}
-
-	public int getEventId() {
-		return this.eventId;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public LocalDateTime getStartTime() {
-		return this.startTime;
+		super(eventId, name, startTime, meetingName);
 	}
 
 	public List<Horse> getRunners() {
@@ -76,23 +45,7 @@ public class Race extends BaseDomainObject {
 		this.runners.add(horse);
 	}
 
-	public void setMeetingName(String meetingName) {
-		this.meetingName = meetingName;
-	}
-
-	public String getMeetingName() {
-		return this.meetingName;
-	}
-
-	public void setEventId(int raceId) {
-		this.eventId = raceId;
-	}
-
-	public void setComplete(boolean complete) {
-		this.complete = complete;
-	}
-
-	public boolean isComplete() {
-		return complete;
+	public BasicRace toBasicRace(){
+		return new BasicRace(this.getEventId(), this.getName(), this.getStartTime(), this.getMeetingName());
 	}
 }

@@ -14,10 +14,10 @@ package uk.co.onehp.trickle.domain;
 
 import java.math.BigDecimal;
 
-import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Serialized;
 
-@Entity
+@Embedded
 public class Pricing extends MongoDomainObject {
 
 	@Serialized

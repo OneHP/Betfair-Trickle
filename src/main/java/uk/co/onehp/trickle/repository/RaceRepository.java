@@ -14,10 +14,12 @@ package uk.co.onehp.trickle.repository;
 
 import java.util.List;
 
+import uk.co.onehp.trickle.domain.BasicRace;
 import uk.co.onehp.trickle.domain.Race;
 
 public interface RaceRepository {
 	void saveOrUpdate(Race race);
+	void saveOrUpdate(BasicRace basicRace);
 	Race getRace(final int id);
 	List<Race> getAllRaces();
 }

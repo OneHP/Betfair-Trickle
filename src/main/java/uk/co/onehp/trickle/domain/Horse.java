@@ -14,18 +14,18 @@ package uk.co.onehp.trickle.domain;
 
 import java.util.List;
 
+import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Reference;
 
 @Entity
 public class Horse extends MongoDomainObject {
 
 	private int runnerId;
 	private String name;
-	@Reference
+	@Embedded
 	private List<Pricing> prices;
-	@Reference
-	private Race race;
+	@Embedded
+	private BasicRace race;
 
 	public Horse() {
 	}
@@ -58,11 +58,11 @@ public class Horse extends MongoDomainObject {
 		this.prices = prices;
 	}
 
-	public void setRace(Race race) {
+	public void setRace(BasicRace race) {
 		this.race = race;
 	}
 
-	public Race getRace() {
+	public BasicRace getRace() {
 		return this.race;
 	}
 }

@@ -27,6 +27,8 @@ import uk.co.onehp.trickle.domain.Pricing;
 import uk.co.onehp.trickle.domain.Race;
 import uk.co.onehp.trickle.repository.HorseRepository;
 import uk.co.onehp.trickle.repository.MarketRepository;
+import uk.co.onehp.trickle.repository.MeetingRepository;
+import uk.co.onehp.trickle.repository.RaceRepository;
 
 import com.google.common.collect.Lists;
 
@@ -39,6 +41,10 @@ public class MongoMarketDaoCustomT {
 		"classpath:/spring-trickle.xml");
 		final MarketRepository marketRepository = (MarketRepository) applicationContext
 		.getBean("marketRepository");
+		final MeetingRepository meetingRepository = (MeetingRepository) applicationContext
+		.getBean("meetingRepository");
+		final RaceRepository raceRepository = (RaceRepository) applicationContext
+		.getBean("raceRepository");
 		final HorseRepository horseRepository = (HorseRepository) applicationContext
 		.getBean("horseRepository");
 
@@ -49,15 +55,18 @@ public class MongoMarketDaoCustomT {
 		final Pricing pricing = new Pricing(new BigDecimal("3.45"), new BigDecimal("3090.96"), BettingAspect.BACK);
 
 		horse.setRunnerId(441);
-		horse.setRace(race);
 		horse.setPrices(Lists.newArrayList(pricing));
 
-		race.addHorse(horse);
-
 		meeting.addRace(race);
-
 		market.addMeeting(meeting);
 
+		raceRepository.saveOrUpdate(race);
+		horse.setRace(race);
+		horseRepository.saveOrUpdate(horse);
+		race.addHorse(horse);
+		raceRepository.saveOrUpdate(race);
+
+		meetingRepository.saveOrUpdate(meeting);
 		marketRepository.saveOrUpdate(market);
 		System.out.println(marketRepository.getMarket(7483));
 	}

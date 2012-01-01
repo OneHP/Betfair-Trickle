@@ -23,6 +23,7 @@ import uk.co.onehp.trickle.domain.Meeting;
 import uk.co.onehp.trickle.domain.Race;
 import uk.co.onehp.trickle.repository.MarketRepository;
 import uk.co.onehp.trickle.repository.MeetingRepository;
+import uk.co.onehp.trickle.repository.RaceRepository;
 import uk.co.onehp.trickle.services.session.SessionService;
 import uk.co.onehp.trickle.util.DateUtil;
 
@@ -43,10 +44,13 @@ public class EventsServiceImpl implements EventsService {
 	SessionService sessionService;
 
 	@Autowired
-	MarketRepository marketDao;
+	MarketRepository marketRepository;
 
 	@Autowired
-	MeetingRepository meetingDao;
+	MeetingRepository meetingRepository;
+
+	@Autowired
+	RaceRepository raceRepository;
 
 	@Value("$ukMarketId")
 	private final String ukMarketId = "298251";
@@ -83,17 +87,19 @@ public class EventsServiceImpl implements EventsService {
 					if(bfEvent.getEventId()> Integer.parseInt(this.meetingIdLimit)){
 						final Meeting meeting = new Meeting(bfEvent.getEventId(), bfEvent.getEventName());
 						market.addMeeting(meeting);
+						this.meetingRepository.saveOrUpdate(meeting);
 					}
 				}
-				this.marketDao.saveOrUpdate(market);
+				this.marketRepository.saveOrUpdate(market);
 			}else{
-				final Meeting meeting = this.meetingDao.getMeeting(result.getEventParentId());
+				final Meeting meeting = this.meetingRepository.getMeeting(result.getEventParentId());
 				for(MarketSummary marketSummary : result.getMarketItems().getMarketSummary()){
 					final Race race = new Race(marketSummary.getMarketId(),marketSummary.getMarketName(),DateUtil.gregorianCalendarToLocalDateTime(marketSummary.getStartTime())
 							,meeting.getName());
 					meeting.addRace(race);
+					this.raceRepository.saveOrUpdate(race);
 				}
-				this.meetingDao.saveOrUpdate(meeting);
+				this.meetingRepository.saveOrUpdate(meeting);
 			}
 		}
 		this.log.debug("GET EVENTS: " + result.getErrorCode().toString() + ": " + result.getHeader().getErrorCode());

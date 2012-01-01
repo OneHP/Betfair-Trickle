@@ -22,10 +22,9 @@ import java.math.BigDecimal;
 import org.joda.time.LocalDateTime;
 
 import com.google.code.morphia.annotations.Embedded;
-import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Serialized;
 
-@Entity
+@Embedded
 public class BetLog extends BaseDomainObject {
 
 	@Serialized

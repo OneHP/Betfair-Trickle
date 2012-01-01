@@ -14,6 +14,7 @@ package uk.co.onehp.trickle.domain;
 
 import java.util.List;
 
+import com.google.code.morphia.annotations.Embedded;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Reference;
 import com.google.common.collect.Lists;
@@ -25,10 +26,10 @@ public class Bet extends BaseDomainObject{
 	private Horse horse;
 	@Reference
 	private Strategy strategy;
-	@Reference
+	@Embedded
 	private List<BetTiming> timings;
 	private boolean complete;
-	@Reference
+	@Embedded
 	private List<BetLog> betLogs;
 
 	public Bet(){
@@ -118,6 +119,6 @@ public class Bet extends BaseDomainObject{
 	}
 
 	public boolean isComplete() {
-		return complete;
+		return this.complete;
 	}
 }

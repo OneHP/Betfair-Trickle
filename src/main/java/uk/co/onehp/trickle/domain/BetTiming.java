@@ -12,10 +12,10 @@
  */
 package uk.co.onehp.trickle.domain;
 
-import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Embedded;
 
 
-@Entity
+@Embedded
 public class BetTiming extends MongoDomainObject {
 
 	private int secondsBeforeOff;

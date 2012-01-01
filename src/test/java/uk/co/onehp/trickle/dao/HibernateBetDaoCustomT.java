@@ -36,7 +36,7 @@ public class HibernateBetDaoCustomT {
 		.getBean("betDao");
 
 		final RaceRepository raceDao = (RaceRepository) applicationContext
-		.getBean("raceDao");
+		.getBean("raceRepository");
 
 		final Race race = new Race(867, "Race", new LocalDateTime(2012,2,22,19,19,0), "meeting");
 

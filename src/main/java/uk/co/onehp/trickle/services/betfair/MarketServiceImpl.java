@@ -17,8 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import uk.co.onehp.trickle.domain.BasicRace;
 import uk.co.onehp.trickle.domain.Horse;
 import uk.co.onehp.trickle.domain.Race;
+import uk.co.onehp.trickle.repository.HorseRepository;
 import uk.co.onehp.trickle.repository.RaceRepository;
 import uk.co.onehp.trickle.services.session.SessionService;
 
@@ -38,7 +40,10 @@ public class MarketServiceImpl implements MarketService {
 	SessionService sessionService;
 
 	@Autowired
-	RaceRepository raceDao;
+	RaceRepository raceRepository;
+
+	@Autowired
+	HorseRepository horseRepository;
 
 	private final Logger log = Logger.getLogger(MarketServiceImpl.class);
 
@@ -63,15 +68,18 @@ public class MarketServiceImpl implements MarketService {
 			this.sessionService.updateGlobalSession(result.getHeader().getSessionToken());
 			this.sessionService.updateExchangeSession(result.getHeader().getSessionToken());
 
-			final Race race = this.raceDao.getRace(result.getMarket().getMarketId());
+			final Race race = this.raceRepository.getRace(result.getMarket().getMarketId());
+			final BasicRace basicRace = race.toBasicRace();
+			this.raceRepository.saveOrUpdate(basicRace);
 			for(Runner runner : result.getMarket().getRunners().getRunner()){
 				final Horse horse = new Horse();
 				horse.setRunnerId(runner.getSelectionId());
 				horse.setName(runner.getName());
-				horse.setRace(race);
+				horse.setRace(basicRace);
+				this.horseRepository.saveOrUpdate(horse);
 				race.addHorse(horse);
 			}
-			this.raceDao.saveOrUpdate(race);
+			this.raceRepository.saveOrUpdate(race);
 		}
 		this.log.debug("GET MARKET: " + result.getErrorCode().toString());
 	}
