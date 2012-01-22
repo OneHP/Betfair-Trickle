@@ -26,9 +26,9 @@
     
 	<bean id="myDataSource" class="org.apache.commons.dbcp.BasicDataSource" >
     	<property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-    	<property name="url" ><value>${db.url}</value></property>
-    	<property name="username" ><value>${db.username}</value></property>
-    	<property name="password" ><value>${db.password}</value></property>
+    	<property name="url" ><value>${mysql.url}</value></property>
+    	<property name="username" ><value>${mysql.username}</value></property>
+    	<property name="password" ><value>${mysql.password}</value></property>
 	</bean>
 	
 	<bean id="baseSessionFactory"

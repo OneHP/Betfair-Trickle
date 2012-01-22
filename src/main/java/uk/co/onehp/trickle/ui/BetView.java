@@ -259,7 +259,7 @@ public class BetView extends CustomComponent {
 	private Object addBetLogToTreeContainer(HierarchicalContainer container, BetLog addition, Object parent) {
 		Object id = container.addItem();
 		container.getContainerProperty(id, "Detail").setValue(DateUtil.toShortString(addition.getPlacedDateTime())
-				+ " - £" + addition.getLiability() + " - " + addition.getPrice() + " - "
+				+ " - \\U+00A3" + addition.getLiability() + " - " + addition.getPrice() + " - "
 				+ (addition.getBetType() == BetType.MOC_EXCHANGE ? "Exchange" : "SP"));
 		container.setParent(id, parent);
 		container.setChildrenAllowed(parent, true);
