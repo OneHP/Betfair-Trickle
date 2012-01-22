@@ -12,10 +12,13 @@
  */
 package uk.co.onehp.trickle.dao;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Repository;
 
+import com.google.common.collect.Maps;
+
 import uk.co.onehp.trickle.domain.Horse;
-import uk.co.onehp.trickle.domain.HorsePk;
 
 @Repository("horseDao")
 public class HibernateHorseDao extends HibernateBaseDao implements HorseDao {
@@ -26,8 +29,11 @@ public class HibernateHorseDao extends HibernateBaseDao implements HorseDao {
 	}
 
 	@Override
-	public Horse getHorse(HorsePk id) {
-		return hibernateTemplate.get(Horse.class, id);
+	public Horse getHorse(int runnerId, int raceId) {
+		Map<String , Integer> params = Maps.newHashMap();
+		params.put("runnerId", runnerId);
+		params.put("raceId", raceId);
+		return (Horse) hibernateTemplate.findByNamedQueryAndNamedParam("getHorse", new String[]{"runnerId","raceId"}, new Integer[]{runnerId,raceId}).get(0);
 	}
 
 }

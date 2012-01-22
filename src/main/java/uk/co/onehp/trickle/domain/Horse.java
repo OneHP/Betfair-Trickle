@@ -16,6 +16,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -25,13 +26,26 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.NamedQueries;
+import org.hibernate.annotations.NamedQuery;
 
+@NamedQueries({
+	@NamedQuery(
+	name = "getHorse",
+	query = "from Horse h where h.runnerId = :runnerId and h.raceId = :raceId"
+	)
+})
 @Entity
 public class Horse extends BaseDomainObject {
 
 	@Id
-	private final HorsePk key = new HorsePk();
+	@GenericGenerator(name = "generator", strategy = "increment")
+	@GeneratedValue(generator = "generator")
+	private int id;
+	private int runnerId;
+	private int raceId;
 	private String name;
 	@OneToMany(fetch=FetchType.EAGER)
 	@Cascade(CascadeType.ALL)
@@ -43,62 +57,42 @@ public class Horse extends BaseDomainObject {
 	public Horse() {
 	}
 
-	/**
-	 * @return the runnerId
-	 */
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public int getRunnerId() {
-		return this.key.runnerId;
+		return this.runnerId;
 	}
 
-	/**
-	 * @param runnerId
-	 *            the runnerId to set
-	 */
 	public void setRunnerId(final int runnerId) {
-		this.key.runnerId = runnerId;
+		this.runnerId = runnerId;
 	}
 
-	/**
-	 * @return the runnerId
-	 */
 	public int getRaceId() {
-		return this.key.raceId;
+		return this.raceId;
 	}
 
-	/**
-	 * @param runnerId
-	 *            the runnerId to set
-	 */
 	public void setRaceId(final int raceId) {
-		this.key.raceId = raceId;
+		this.raceId = raceId;
 	}
 
-	/**
-	 * @return the name
-	 */
 	public String getName() {
 		return this.name;
 	}
 
-	/**
-	 * @param name
-	 *            the name to set
-	 */
 	public void setName(final String name) {
 		this.name = name;
 	}
 
-	/**
-	 * @return the prices
-	 */
 	public List<Pricing> getPrices() {
 		return this.prices;
 	}
 
-	/**
-	 * @param prices
-	 *            the prices to set
-	 */
 	public void setPrices(final List<Pricing> prices) {
 		this.prices = prices;
 	}
